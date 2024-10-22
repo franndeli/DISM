@@ -1,0 +1,399 @@
+openapi: 3.0.0
+info:
+  title: Sistema de Control de Presencia
+  description: "API para la gestión de usuarios, trabajos y fichajes."
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/
+security:
+- ApiKeyAuth: []
+tags:
+- name: Usuarios
+  description: Operaciones relacionadas con los usuarios.
+- name: Trabajos
+  description: Operaciones relacionadas con los trabajos.
+- name: Fichajes
+  description: Operaciones relacionadas con los fichajes.
+paths:
+  /login:
+    post:
+      tags:
+      - Usuarios
+      summary: Iniciar sesión
+      description: Autenticar a un usuario (admin o usuario normal).
+      operationId: loginPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login_body'
+        required: true
+      responses:
+        "200":
+          description: Sesión iniciada correctamente.
+        "401":
+          description: Credenciales incorrectas.
+      x-swagger-router-controller: Usuarios
+  /logout:
+    post:
+      tags:
+      - Usuarios
+      summary: Cerrar sesión
+      description: Finalizar la sesión del usuario.
+      operationId: logoutPOST
+      responses:
+        "200":
+          description: Sesión finalizada correctamente.
+      x-swagger-router-controller: Usuarios
+  /usuarios:
+    get:
+      tags:
+      - Usuarios
+      summary: Obtener todos los usuarios
+      description: Retorna una lista de todos los usuarios (solo admin).
+      operationId: usuariosGET
+      responses:
+        "200":
+          description: Lista de usuarios obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+                x-content-type: application/json
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Usuarios
+    post:
+      tags:
+      - Usuarios
+      summary: Crear un nuevo usuario
+      description: Crea un nuevo usuario (solo admin).
+      operationId: usuariosPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "201":
+          description: Usuario creado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Usuarios
+    delete:
+      tags:
+      - Usuarios
+      summary: Eliminar un usuario
+      description: Elimina un usuario existente (solo admin).
+      operationId: usuariosDELETE
+      parameters:
+      - name: idUsuario
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Usuario eliminado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Usuarios
+  /usuarios/{idUsuario}:
+    put:
+      tags:
+      - Usuarios
+      summary: Actualizar un usuario
+      description: Actualiza los datos de un usuario existente (solo admin).
+      operationId: usuariosIdUsuarioPUT
+      parameters:
+      - name: idUsuario
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "200":
+          description: Usuario actualizado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Usuarios
+  /trabajos:
+    get:
+      tags:
+      - Trabajos
+      summary: Obtener todos los trabajos
+      description: Retorna una lista de todos los trabajos.
+      operationId: trabajosGET
+      responses:
+        "200":
+          description: Lista de trabajos obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trabajo'
+                x-content-type: application/json
+      x-swagger-router-controller: Trabajos
+    post:
+      tags:
+      - Trabajos
+      summary: Crear un nuevo trabajo
+      description: Crea un nuevo trabajo (solo admin).
+      operationId: trabajosPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trabajo'
+        required: true
+      responses:
+        "201":
+          description: Trabajo creado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Trabajos
+    delete:
+      tags:
+      - Trabajos
+      summary: Eliminar un trabajo
+      description: Elimina un trabajo existente (solo admin).
+      operationId: trabajosDELETE
+      parameters:
+      - name: idTrabajo
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Trabajo eliminado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Trabajos
+  /trabajos/{idTrabajo}:
+    put:
+      tags:
+      - Trabajos
+      summary: Actualizar un trabajo
+      description: Actualiza los datos de un trabajo existente (solo admin).
+      operationId: trabajosIdTrabajoPUT
+      parameters:
+      - name: idTrabajo
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trabajo'
+        required: true
+      responses:
+        "200":
+          description: Trabajo actualizado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Trabajos
+  /fichajes:
+    get:
+      tags:
+      - Fichajes
+      summary: Obtener todos los fichajes
+      description: Retorna una lista de fichajes filtrados por fechas y usuario (solo
+        admin).
+      operationId: fichajesGET
+      parameters:
+      - name: idUsuario
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: fechaInicio
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: fechaFin
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          description: Lista de fichajes obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fichaje'
+                x-content-type: application/json
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Fichajes
+    post:
+      tags:
+      - Fichajes
+      summary: Crear un nuevo fichaje
+      description: Crea un nuevo fichaje para un usuario.
+      operationId: fichajesPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fichaje'
+        required: true
+      responses:
+        "201":
+          description: Fichaje creado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Fichajes
+  /fichajes/{idFichaje}:
+    put:
+      tags:
+      - Fichajes
+      summary: Finalizar un fichaje
+      description: Actualiza un fichaje existente con la hora de salida.
+      operationId: fichajesIdFichajePUT
+      parameters:
+      - name: idFichaje
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 100
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fichaje'
+        required: true
+      responses:
+        "200":
+          description: Fichaje actualizado correctamente.
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Fichajes
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        idUsuario:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Juan Pérez
+        usuario:
+          type: string
+          example: jperez
+        clave:
+          type: string
+          example: password123
+        tipo:
+          type: string
+          example: Usuario
+          enum:
+          - Administrador
+          - Usuario
+      example:
+        clave: password123
+        tipo: Usuario
+        idUsuario: 1
+        usuario: jperez
+        nombre: Juan Pérez
+    Trabajo:
+      type: object
+      properties:
+        idTrabajo:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Desarrollo Web
+      example:
+        idTrabajo: 1
+        nombre: Desarrollo Web
+    Fichaje:
+      type: object
+      properties:
+        idFichaje:
+          type: integer
+          example: 100
+        fechaHoraEntrada:
+          type: string
+          format: date-time
+          example: 2024-10-21T08:00:00Z
+        fechaHoraSalida:
+          type: string
+          format: date-time
+          example: 2024-10-21T17:00:00Z
+        idTrabajo:
+          type: integer
+          example: 1
+        idUsuario:
+          type: integer
+          example: 1
+        geolocalizacionLatitud:
+          type: number
+          format: float
+          example: 40.416775
+        geolocalizacionLongitud:
+          type: number
+          format: float
+          example: -3.70379
+      example:
+        idFichaje: 100
+        idTrabajo: 1
+        fechaHoraSalida: 2024-10-21T17:00:00Z
+        idUsuario: 1
+        geolocalizacionLongitud: -3.70379
+        geolocalizacionLatitud: 40.416775
+        fechaHoraEntrada: 2024-10-21T08:00:00Z
+    login_body:
+      type: object
+      properties:
+        usuario:
+          type: string
+          example: jperez
+        clave:
+          type: string
+          example: password123
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
