@@ -1,7 +1,7 @@
 // Para controlar los tokens de los usuarios
 
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 
 const db = require('../utils/db');
 
@@ -23,24 +23,29 @@ const login = (req, res) => {
       const user = results[0];
   
       // Verificar la contraseña
-      const passwordIsValid = bcrypt.compareSync(clave, user.clave);
+      const passwordIsValid = clave == user.Clave;
+
       if (!passwordIsValid) {
         return res.status(401).json({ message: 'Contraseña incorrecta' });
       }
   
       // Crear el token JWT
-      const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', {
         expiresIn: 86400 // 24 horas
       });
   
-      // Enviar el token y los datos del usuario en la respuesta
-      res.status(200).json({
-        id: user.idUsuario,
-        usuario: user.Usuario,
-        nombre: user.Nombre,
-        role: user.Tipo,
-        token: token
-      });
+      if (token) {
+        // Enviar el token y los datos del usuario en la respuesta
+        res.status(200).json({
+          id: user.idUsuario,
+          usuario: user.Usuario,
+          nombre: user.Nombre,
+          role: user.Tipo,
+          token: token
+        });
+      } else {
+        res.status(400).json({ message: 'Ha ocurrido un problema con el token' })
+      }
     });
   };
 

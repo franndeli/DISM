@@ -5,8 +5,7 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8080/
-security:
-- ApiKeyAuth: []
+
 tags:
 - name: Usuarios
   description: Operaciones relacionadas con los usuarios.
@@ -14,6 +13,7 @@ tags:
   description: Operaciones relacionadas con los trabajos.
 - name: Fichajes
   description: Operaciones relacionadas con los fichajes.
+
 paths:
   /login:
     post:
@@ -188,6 +188,28 @@ paths:
       - ApiKeyAuth: []
       x-swagger-router-controller: Trabajos
   /trabajos/{idTrabajo}:
+    get:
+      tags:
+        - Trabajos
+      summary: Obtener un trabajo por ID
+      description: Obtener un trabajo por su ID (solo admin).
+      operationId: trabajosIdTrabajoGET
+      parameters:
+        - name: idTrabajo
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Trabajo obtenido correctamente.
+        "400":
+          description: No se ha encontrado el trabajo
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Trabajos
     put:
       tags:
       - Trabajos
@@ -202,7 +224,6 @@ paths:
         explode: false
         schema:
           type: integer
-          example: 1
       requestBody:
         content:
           application/json:
@@ -270,7 +291,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Fichaje'
+              $ref: '#/components/schemas/FichajeCreate'
         required: true
       responses:
         "201":
@@ -293,12 +314,11 @@ paths:
         explode: false
         schema:
           type: integer
-          example: 100
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Fichaje'
+              $ref: '#/components/schemas/FichajeCreate'
         required: true
       responses:
         "200":
@@ -361,6 +381,9 @@ components:
           type: string
           format: date-time
           example: 2024-10-21T17:00:00Z
+        horasTrabajadas:
+          type: integer
+          example: 100
         idTrabajo:
           type: integer
           example: 1
@@ -383,15 +406,43 @@ components:
         geolocalizacionLongitud: -3.70379
         geolocalizacionLatitud: 40.416775
         fechaHoraEntrada: 2024-10-21T08:00:00Z
+    FichajeCreate:
+      type: object
+      properties:
+        fechaHoraEntrada:
+          type: string
+          format: date-time
+          example: 2024-10-21T08:00:00Z
+        fechaHoraSalida:
+          type: string
+          format: date-time
+          example: 2024-10-21T17:00:00Z
+        horasTrabajadas:
+          type: integer
+          example: 100
+        idTrabajo:
+          type: integer
+          example: 1
+        idUsuario:
+          type: integer
+          example: 1
+        geolocalizacionLatitud:
+          type: number
+          format: float
+          example: 40.416775
+        geolocalizacionLongitud:
+          type: number
+          format: float
+          example: -3.70379
     login_body:
       type: object
       properties:
         usuario:
           type: string
-          example: jperez
+          example: frandeli_01
         clave:
           type: string
-          example: password123
+          example: '1234'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

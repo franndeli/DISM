@@ -1,7 +1,7 @@
 'use strict';
 
 const { login } = require('../auth/authController');
-
+const db = require('../utils/db');
 
 /**
  * Iniciar sesión
@@ -12,15 +12,15 @@ const { login } = require('../auth/authController');
  **/
 exports.loginPOST = function (body) {
   return new Promise(function (resolve, reject) {
-    // Creamos una request y response simulada
+    
     const req = { body };
     const res = {
       status: (statusCode) => ({
         json: (data) => {
           if (statusCode === 200) {
-            resolve(data); // Devolvemos los datos en caso de éxito
+            resolve(data);
           } else {
-            reject(data); // Rechazamos en caso de error
+            reject(data); 
           }
         },
       }),
@@ -28,6 +28,7 @@ exports.loginPOST = function (body) {
 
     // Llamamos a la función login del authController
     login(req, res);
+    
   });
 };
 
@@ -54,7 +55,24 @@ exports.logoutPOST = function() {
  **/
 exports.usuariosDELETE = function(idUsuario) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const query= 'DELETE FROM usuarios WHERE idUsuario = ?'
+
+    db.query(query, idUsuario, function(error, results){
+      if(error){
+        reject({
+          message: "Error al eliminar al usuario", error:error
+        });
+      } else if (results.affectedRows > 0) {
+        resolve({
+          message: "Usuario eliminado con éxito"
+        });
+      } else {
+        reject({
+          message: "Usuario no encontrado con ID " + idUsuario
+        })
+      }
+      // console.log(results);
+    })
   });
 }
 
@@ -65,27 +83,21 @@ exports.usuariosDELETE = function(idUsuario) {
  *
  * returns List
  **/
+
 exports.usuariosGET = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "clave" : "password123",
-  "tipo" : "Usuario",
-  "idUsuario" : 1,
-  "usuario" : "jperez",
-  "nombre" : "Juan Pérez"
-}, {
-  "clave" : "password123",
-  "tipo" : "Usuario",
-  "idUsuario" : 1,
-  "usuario" : "jperez",
-  "nombre" : "Juan Pérez"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = 'SELECT * FROM usuarios'
+    db.query(query, function (error, results){
+      if (error){
+        reject({
+          message:"Error al obtener los usuarios", error: error
+        });
+      } else {
+        resolve({
+          message:"Usuarios obtenido con éxito", body: results
+        });
+      }
+    })
   });
 }
 
@@ -100,7 +112,40 @@ exports.usuariosGET = function() {
  **/
 exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+    db.query(secure, idUsuario, function(error,results){
+      // console.log(results);
+      if(results.length == 0){
+        reject({
+          message: "No existe ningún usuario con ID " + idUsuario, error: error
+        })
+      } else {
+
+        const secure2 = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+        db.query(secure2, body.idUsuario, function(error, results){
+          if(results.length != 0 && body.idUsuario != idUsuario){
+            reject({
+              message: "El ID " + body.idUsuario + " ya existe en la base de datos", error: error
+            })
+          } else {
+            const query = 'UPDATE usuarios SET idUsuario = ?, Nombre = ?, Usuario = ?, Clave = ?, Tipo = ? WHERE idUsuario = ?'
+
+            db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo, idUsuario], function(error, results){
+              // console.log(results);
+              if(results.affectedRows > 0){
+                resolve({
+                  message: "Usuario modificado con éxito", result: body 
+                })
+              } else {
+                reject({
+                  message: "No se ha podido modificar el usuario", error: error
+                })
+              }
+            })
+          }
+        })
+      }
+    })
   });
 }
 
@@ -114,7 +159,29 @@ exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
  **/
 exports.usuariosPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+
+    db.query(secure, body.idUsuario, function(error, results){
+      if(results.length>0){
+        reject({
+          message:"El ID " + body.idUsuario + " ya existe en Usuarios"
+        })
+      } else {
+        const query = 'INSERT INTO usuarios (idUsuario, Nombre, Usuario, Clave, Tipo) VALUES (?, ?, ?, ?, ?)';
+
+        db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo], function(error, results){
+          if (error){
+            reject({
+              message:"Error al crear el usuario", error: error
+            });
+          } else {
+            resolve({
+              message:"Usuario creado con éxito", usuarioCreado: body
+            });
+          }
+        });
+      }
+    })
   });
-}
+};
 

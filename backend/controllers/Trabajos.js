@@ -23,6 +23,17 @@ module.exports.trabajosGET = function trabajosGET (req, res, next) {
     });
 };
 
+module.exports.trabajosIdTrabajoGET = function trabajosIdTrabajoGET (req, res, next, body, idTrabajo) {
+  Trabajos.trabajosIdTrabajoGET(body, idTrabajo)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+
 module.exports.trabajosIdTrabajoPUT = function trabajosIdTrabajoPUT (req, res, next, body, idTrabajo) {
   Trabajos.trabajosIdTrabajoPUT(body, idTrabajo)
     .then(function (response) {

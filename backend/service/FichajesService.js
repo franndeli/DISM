@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../utils/db');
 
 /**
  * Obtener todos los fichajes
@@ -12,29 +13,43 @@
  **/
 exports.fichajesGET = function(idUsuario,fechaInicio,fechaFin) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "idFichaje" : 100,
-  "idTrabajo" : 1,
-  "fechaHoraSalida" : "2024-10-21T17:00:00Z",
-  "idUsuario" : 1,
-  "geolocalizacionLongitud" : -3.70379,
-  "geolocalizacionLatitud" : 40.416775,
-  "fechaHoraEntrada" : "2024-10-21T08:00:00Z"
-}, {
-  "idFichaje" : 100,
-  "idTrabajo" : 1,
-  "fechaHoraSalida" : "2024-10-21T17:00:00Z",
-  "idUsuario" : 1,
-  "geolocalizacionLongitud" : -3.70379,
-  "geolocalizacionLatitud" : 40.416775,
-  "fechaHoraEntrada" : "2024-10-21T08:00:00Z"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let query = 'SELECT * FROM fichajes WHERE 1=1';
+
+    const queryParams = [];
+
+    if (idUsuario) {
+      query += ' AND idUsuario = ?';
+      queryParams.push(idUsuario);
     }
+
+    if (fechaInicio) {
+      query += ' AND FechaHoraEntrada = ?';
+      queryParams.push(fechaInicio);
+    }
+
+    if (fechaFin) {
+      query += ' AND FechaHoraSalida = ?';
+      queryParams.push(fechaFin);
+    }
+
+    db.query(query, queryParams, function(error, results) {
+      if (error) {
+        reject({
+          message: "Error al obtener los fichajes",
+          error: error
+        });
+      } else if (results.length === 0) {
+        resolve({
+          message: "No se encontraron fichajes con los parámetros especificados",
+          body: []
+        });
+      } else {
+        resolve({
+          message: "Fichajes obtenidos con éxito",
+          body: results
+        });
+      }
+    });
   });
 }
 
@@ -49,7 +64,30 @@ exports.fichajesGET = function(idUsuario,fechaInicio,fechaFin) {
  **/
 exports.fichajesIdFichajePUT = function(body,idFichaje) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const secure = 'SELECT * FROM fichajes WHERE idFichaje = ?';
+    console.log('hola');
+    db.query(secure, idFichaje, function(error,results){
+      if(results.length == 0){
+        reject({
+          message: "No existe ningún fichaje con ID " + idFichaje, error: error
+        })
+      } else {
+        const query = 'UPDATE fichajes SET FechaHoraEntrada = ?, FechaHoraSalida = ?, HorasTrabajadas = ?, idTrabajo = ?, idUsuario = ?, GeolocalizacionLatitud = ?, GeolocalizacionLongitud = ? WHERE idFichaje = ?'
+
+        db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud, idFichaje], function(error, results){
+          // console.log(results);
+          if(results.affectedRows > 0){
+            resolve({
+              message: "Fichaje modificado con éxito", result: body 
+            })
+          } else {
+            reject({
+              message: "No se ha podido modificar el fichaje", error: error
+            })
+          }
+        })
+      }
+    })
   });
 }
 
@@ -63,7 +101,19 @@ exports.fichajesIdFichajePUT = function(body,idFichaje) {
  **/
 exports.fichajesPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const query = 'INSERT INTO fichajes (FechaHoraEntrada, FechaHoraSalida, HorasTrabajadas, idTrabajo, idUsuario, GeolocalizacionLatitud, GeolocalizacionLongitud) VALUES (?, ?, ?, ?, ?, ?, ?)';
+
+    db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud], function(error, results){
+      if (error){
+        reject({
+          message:"Error al crear el fichaje", error: error
+        });
+      } else {
+        resolve({
+          message:"Fichaje creado con éxito", usuarioCreado: body
+        });
+      }
+    });
   });
 }
 
