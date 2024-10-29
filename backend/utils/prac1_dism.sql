@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-10-2024 a las 09:30:01
+-- Tiempo de generación: 29-10-2024 a las 10:17:26
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -49,6 +49,16 @@ CREATE TABLE `fichajes` (
   `GeolocalizacionLongitud` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `fichajes`
+--
+
+INSERT INTO `fichajes` (`idFichaje`, `FechaHoraEntrada`, `FechaHoraSalida`, `HorasTrabajadas`, `idTrabajo`, `idUsuario`, `GeolocalizacionLatitud`, `GeolocalizacionLongitud`) VALUES
+(1, '2024-10-21 08:00:00', '2024-10-21 17:00:00', 100, 1, 1, 40.4168, -3.70379),
+(2, '2024-10-25 17:41:02', '2024-10-25 17:41:02', 54, 3, 1, 213124, 65464),
+(3, '2024-10-25 17:41:37', '2024-10-25 17:41:37', 39, 2, 2, 213124, 54325300),
+(4, '2024-10-21 08:00:00', '2024-10-21 17:00:00', 100, 1, 1, 40.4168, -3.70379);
+
 -- --------------------------------------------------------
 
 --
@@ -59,6 +69,16 @@ CREATE TABLE `trabajos` (
   `idTrabajo` int(11) NOT NULL,
   `Nombre` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `trabajos`
+--
+
+INSERT INTO `trabajos` (`idTrabajo`, `Nombre`) VALUES
+(1, 'Desarrollo Web'),
+(2, 'Limpieza baños'),
+(3, 'Organizar reuniones'),
+(4, 'Mantenimiento general');
 
 -- --------------------------------------------------------
 
@@ -75,6 +95,14 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`idUsuario`, `Nombre`, `Usuario`, `Clave`, `Tipo`) VALUES
+(1, 'Francisco', 'frandeli_01', '1234', 'Usuario'),
+(2, 'Celia', 'celia_02', '1234', 'Usuario');
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -88,7 +116,9 @@ ALTER TABLE `apikey`
 -- Indices de la tabla `fichajes`
 --
 ALTER TABLE `fichajes`
-  ADD PRIMARY KEY (`idFichaje`);
+  ADD PRIMARY KEY (`idFichaje`),
+  ADD KEY `idTrabajo` (`idTrabajo`),
+  ADD KEY `idUsuario` (`idUsuario`);
 
 --
 -- Indices de la tabla `trabajos`
@@ -116,7 +146,18 @@ ALTER TABLE `apikey`
 -- AUTO_INCREMENT de la tabla `fichajes`
 --
 ALTER TABLE `fichajes`
-  MODIFY `idFichaje` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFichaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `fichajes`
+--
+ALTER TABLE `fichajes`
+  ADD CONSTRAINT `idTrabajoFichajes_idTrabajo` FOREIGN KEY (`idTrabajo`) REFERENCES `trabajos` (`idTrabajo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `idUsuarioFichajes_idUsuariol` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
