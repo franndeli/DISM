@@ -72,6 +72,10 @@ exports.fichajesIdFichajePUT = function(body,idFichaje) {
           message: "No existe ningún fichaje con ID " + idFichaje, error: error
         })
       } else {
+
+        const columns = Object.keys(body).join(' = ?, ');
+        const values = Object.values(body);
+
         const query = 'UPDATE fichajes SET FechaHoraEntrada = ?, FechaHoraSalida = ?, HorasTrabajadas = ?, idTrabajo = ?, idUsuario = ?, GeolocalizacionLatitud = ?, GeolocalizacionLongitud = ? WHERE idFichaje = ?'
 
         db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud, idFichaje], function(error, results){
@@ -101,9 +105,14 @@ exports.fichajesIdFichajePUT = function(body,idFichaje) {
  **/
 exports.fichajesPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    const query = 'INSERT INTO fichajes (FechaHoraEntrada, FechaHoraSalida, HorasTrabajadas, idTrabajo, idUsuario, GeolocalizacionLatitud, GeolocalizacionLongitud) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-    db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud], function(error, results){
+    const columns = Object.keys(body).join(', ');
+    const placeholders = Object.keys(body).map(() => '?').join(', ');
+    const values = Object.values(body);
+
+    const query = 'INSERT INTO fichajes (' + columns + ') VALUES (' + placeholders + ')';
+
+    db.query(query, values, function(error, results){
       if (error){
         reject({
           message:"Error al crear el fichaje", error: error

@@ -34,7 +34,7 @@ module.exports.usuariosDELETE = function usuariosDELETE (req, res, next, idUsuar
 };
 
 module.exports.usuariosGET = function usuariosGET (req, res, next) {
-  Usuarios.usuariosGET()
+  Usuarios.usuariosGET(req, res)
     .then(function (response) {
       utils.writeJson(res, response);
     })

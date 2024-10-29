@@ -1,6 +1,8 @@
 'use strict';
 
 const { login } = require('../auth/authController');
+const { verifyToken } = require('../auth/authController');
+
 const db = require('../utils/db');
 
 /**
@@ -84,22 +86,34 @@ exports.usuariosDELETE = function(idUsuario) {
  * returns List
  **/
 
-exports.usuariosGET = function() {
-  return new Promise(function(resolve, reject) {
-    const query = 'SELECT * FROM usuarios'
-    db.query(query, function (error, results){
-      if (error){
-        reject({
-          message:"Error al obtener los usuarios", error: error
-        });
-      } else {
-        resolve({
-          message:"Usuarios obtenido con éxito", body: results
-        });
-      }
-    })
+// Cambia req por token en la firma de la función
+exports.usuariosGET = function(req, res) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Verificar el token directamente en vez de req
+      const tokenVerification = await verifyToken(req);
+
+      const query = 'SELECT * FROM usuarios';
+      db.query(query, function(error, results) {
+        if (error) {
+          reject({
+            message: "Error al obtener los usuarios",
+            error: error
+          });
+        } else {
+          resolve({
+            message: "Usuarios obtenidos con éxito",
+            body: results,
+            tokenInfo: tokenVerification
+          });
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
-}
+};
+
 
 
 /**

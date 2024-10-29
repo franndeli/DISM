@@ -50,23 +50,31 @@ const login = (req, res) => {
   };
 
   // Middleware para verificar el token
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-  
-    if (!token) {
-      return res.status(403).json({ message: 'No se proporcionó un token' });
-    }
-  
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: 'Token inválido' });
+  const verifyToken = (req) => {
+    return new Promise((resolve, reject) => {
+      const token = req.headers['authorization'];
+      
+      if (!token) {
+        console.error('Token no proporcionado');
+        return reject({ message: 'No se proporcionó un token' });
       }
   
-      req.userId = decoded.id; 
-      req.userRole = decoded.role;
-      next();
+      // Verifica el token sin prefijo
+      jwt.verify(token, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', (err, decoded) => {
+        if (err) {
+          console.error('Token inválido', err);
+          return reject({ message: 'Token inválido', error: err });
+        }
+  
+        console.log('Token correcto');
+        
+        req.userId = decoded.id;
+        req.userRole = decoded.role;
+        resolve({ message: 'Token verificado', userId: decoded.id, role: decoded.role });
+      });
     });
   };
+  
   
   module.exports = { login, verifyToken };
 
