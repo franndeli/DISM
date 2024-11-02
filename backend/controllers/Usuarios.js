@@ -24,7 +24,7 @@ module.exports.logoutPOST = function logoutPOST (req, res, next) {
 };
 
 module.exports.usuariosDELETE = function usuariosDELETE (req, res, next, idUsuario) {
-  Usuarios.usuariosDELETE(idUsuario)
+  Usuarios.usuariosDELETE(req, idUsuario)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -44,7 +44,7 @@ module.exports.usuariosGET = function usuariosGET (req, res, next) {
 };
 
 module.exports.usuariosIdUsuarioPUT = function usuariosIdUsuarioPUT (req, res, next, body, idUsuario) {
-  Usuarios.usuariosIdUsuarioPUT(body, idUsuario)
+  Usuarios.usuariosIdUsuarioPUT(req, body, idUsuario)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -54,7 +54,7 @@ module.exports.usuariosIdUsuarioPUT = function usuariosIdUsuarioPUT (req, res, n
 };
 
 module.exports.usuariosPOST = function usuariosPOST (req, res, next, body) {
-  Usuarios.usuariosPOST(body)
+  Usuarios.usuariosPOST(req, body)
     .then(function (response) {
       utils.writeJson(res, response);
     })

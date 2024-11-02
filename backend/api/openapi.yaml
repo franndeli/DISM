@@ -148,6 +148,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Trabajo'
                 x-content-type: application/json
+      security:
+      - ApiKeyAuth: []
       x-swagger-router-controller: Trabajos
     post:
       tags:

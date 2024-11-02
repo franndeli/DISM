@@ -55,26 +55,34 @@ exports.logoutPOST = function() {
  * idUsuario Integer 
  * no response value expected for this operation
  **/
-exports.usuariosDELETE = function(idUsuario) {
-  return new Promise(function(resolve, reject) {
-    const query= 'DELETE FROM usuarios WHERE idUsuario = ?'
+exports.usuariosDELETE = function(req, idUsuario) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
+      const query= 'DELETE FROM usuarios WHERE idUsuario = ?'
 
-    db.query(query, idUsuario, function(error, results){
-      if(error){
-        reject({
-          message: "Error al eliminar al usuario", error:error
-        });
-      } else if (results.affectedRows > 0) {
-        resolve({
-          message: "Usuario eliminado con éxito"
-        });
-      } else {
-        reject({
-          message: "Usuario no encontrado con ID " + idUsuario
-        })
-      }
-      // console.log(results);
-    })
+      db.query(query, idUsuario, function(error, results){
+        if(error){
+          reject({
+            message: "Error al eliminar al usuario", error:error
+          });
+        } else if (results.affectedRows > 0) {
+          resolve({
+            message: "Usuario eliminado con éxito", 
+            tokenInfo: tokenVerification
+          });
+        } else {
+          reject({
+            message: "Usuario no encontrado con ID " + idUsuario,
+            error: error
+          })
+        }
+        // console.log(results);
+      })
+    } catch (error) {
+      reject(error);
+    }
+    
   });
 }
 
@@ -90,7 +98,6 @@ exports.usuariosDELETE = function(idUsuario) {
 exports.usuariosGET = function(req, res) {
   return new Promise(async (resolve, reject) => {
     try {
-      // Verificar el token directamente en vez de req
       const tokenVerification = await verifyToken(req);
 
       const query = 'SELECT * FROM usuarios';
@@ -124,42 +131,51 @@ exports.usuariosGET = function(req, res) {
  * idUsuario Integer 
  * no response value expected for this operation
  **/
-exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
-  return new Promise(function(resolve, reject) {
-    const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
-    db.query(secure, idUsuario, function(error,results){
-      // console.log(results);
-      if(results.length == 0){
-        reject({
-          message: "No existe ningún usuario con ID " + idUsuario, error: error
-        })
-      } else {
 
-        const secure2 = 'SELECT * FROM usuarios WHERE idUsuario = ?';
-        db.query(secure2, body.idUsuario, function(error, results){
-          if(results.length != 0 && body.idUsuario != idUsuario){
-            reject({
-              message: "El ID " + body.idUsuario + " ya existe en la base de datos", error: error
-            })
-          } else {
-            const query = 'UPDATE usuarios SET idUsuario = ?, Nombre = ?, Usuario = ?, Clave = ?, Tipo = ? WHERE idUsuario = ?'
+exports.usuariosIdUsuarioPUT = function(req, body, idUsuario) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
 
-            db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo, idUsuario], function(error, results){
-              // console.log(results);
-              if(results.affectedRows > 0){
-                resolve({
-                  message: "Usuario modificado con éxito", result: body 
-                })
-              } else {
-                reject({
-                  message: "No se ha podido modificar el usuario", error: error
-                })
-              }
-            })
-          }
-        })
-      }
-    })
+      const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+      db.query(secure, idUsuario, function(error,results){
+        // console.log(results);
+        if(results.length == 0){
+          reject({
+            message: "No existe ningún usuario con ID " + idUsuario, error: error
+          })
+        } else {
+
+          const secure2 = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+          db.query(secure2, body.idUsuario, function(error, results){
+            if(results.length != 0 && body.idUsuario != idUsuario){
+              reject({
+                message: "El ID " + body.idUsuario + " ya existe en la base de datos", error: error
+              })
+            } else {
+              const query = 'UPDATE usuarios SET idUsuario = ?, Nombre = ?, Usuario = ?, Clave = ?, Tipo = ? WHERE idUsuario = ?'
+
+              db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo, idUsuario], function(error, results){
+                // console.log(results);
+                if(results.affectedRows > 0){
+                  resolve({
+                    message: "Usuario modificado con éxito", 
+                    result: body,
+                    tokenInfo: tokenVerification
+                  })
+                } else {
+                  reject({
+                    message: "No se ha podido modificar el usuario", error: error
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+    } catch (error) {
+      reject (error);
+    }
   });
 }
 
@@ -171,31 +187,39 @@ exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
  * body Usuario 
  * no response value expected for this operation
  **/
-exports.usuariosPOST = function(body) {
-  return new Promise(function(resolve, reject) {
-    const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+exports.usuariosPOST = function(req, body) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
 
-    db.query(secure, body.idUsuario, function(error, results){
-      if(results.length>0){
-        reject({
-          message:"El ID " + body.idUsuario + " ya existe en Usuarios"
-        })
-      } else {
-        const query = 'INSERT INTO usuarios (idUsuario, Nombre, Usuario, Clave, Tipo) VALUES (?, ?, ?, ?, ?)';
+      const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
 
-        db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo], function(error, results){
-          if (error){
-            reject({
-              message:"Error al crear el usuario", error: error
-            });
-          } else {
-            resolve({
-              message:"Usuario creado con éxito", usuarioCreado: body
-            });
-          }
-        });
-      }
-    })
+      db.query(secure, body.idUsuario, function(error, results){
+        if(results.length>0){
+          reject({
+            message:"El ID " + body.idUsuario + " ya existe en Usuarios"
+          })
+        } else {
+          const query = 'INSERT INTO usuarios (idUsuario, Nombre, Usuario, Clave, Tipo) VALUES (?, ?, ?, ?, ?)';
+
+          db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo], function(error, results){
+            if (error){
+              reject({
+                message:"Error al crear el usuario", error: error
+              });
+            } else {
+              resolve({
+                message:"Usuario creado con éxito", 
+                usuarioCreado: body,
+                tokenInfo: tokenVerification
+              });
+            }
+          });
+        }
+      })
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 

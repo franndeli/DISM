@@ -4,7 +4,7 @@ var utils = require('../utils/writer.js');
 var Trabajos = require('../service/TrabajosService');
 
 module.exports.trabajosDELETE = function trabajosDELETE (req, res, next, idTrabajo) {
-  Trabajos.trabajosDELETE(idTrabajo)
+  Trabajos.trabajosDELETE(req, idTrabajo)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -14,8 +14,8 @@ module.exports.trabajosDELETE = function trabajosDELETE (req, res, next, idTraba
 };
 
 module.exports.trabajosGET = function trabajosGET (req, res, next) {
-  Trabajos.trabajosGET()
-    .then(function (response) {
+  Trabajos.trabajosGET(req)
+    .then(function (req, response) {
       utils.writeJson(res, response);
     })
     .catch(function (response) {
@@ -24,7 +24,7 @@ module.exports.trabajosGET = function trabajosGET (req, res, next) {
 };
 
 module.exports.trabajosIdTrabajoGET = function trabajosIdTrabajoGET (req, res, next, body, idTrabajo) {
-  Trabajos.trabajosIdTrabajoGET(body, idTrabajo)
+  Trabajos.trabajosIdTrabajoGET(req, idTrabajo)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -35,7 +35,7 @@ module.exports.trabajosIdTrabajoGET = function trabajosIdTrabajoGET (req, res, n
 
 
 module.exports.trabajosIdTrabajoPUT = function trabajosIdTrabajoPUT (req, res, next, body, idTrabajo) {
-  Trabajos.trabajosIdTrabajoPUT(body, idTrabajo)
+  Trabajos.trabajosIdTrabajoPUT(req, body, idTrabajo)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -45,7 +45,7 @@ module.exports.trabajosIdTrabajoPUT = function trabajosIdTrabajoPUT (req, res, n
 };
 
 module.exports.trabajosPOST = function trabajosPOST (req, res, next, body) {
-  Trabajos.trabajosPOST(body)
+  Trabajos.trabajosPOST(req, body)
     .then(function (response) {
       utils.writeJson(res, response);
     })

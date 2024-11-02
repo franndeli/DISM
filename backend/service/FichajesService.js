@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('../utils/db');
+const { verifyToken } = require('../auth/authController');
 
 /**
  * Obtener todos los fichajes
@@ -11,45 +12,51 @@ const db = require('../utils/db');
  * fechaFin Date  (optional)
  * returns List
  **/
-exports.fichajesGET = function(idUsuario,fechaInicio,fechaFin) {
-  return new Promise(function(resolve, reject) {
-    let query = 'SELECT * FROM fichajes WHERE 1=1';
+exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
 
-    const queryParams = [];
+      let query = 'SELECT * FROM fichajes WHERE 1=1';
 
-    if (idUsuario) {
-      query += ' AND idUsuario = ?';
-      queryParams.push(idUsuario);
-    }
+      const queryParams = [];
 
-    if (fechaInicio) {
-      query += ' AND FechaHoraEntrada = ?';
-      queryParams.push(fechaInicio);
-    }
-
-    if (fechaFin) {
-      query += ' AND FechaHoraSalida = ?';
-      queryParams.push(fechaFin);
-    }
-
-    db.query(query, queryParams, function(error, results) {
-      if (error) {
-        reject({
-          message: "Error al obtener los fichajes",
-          error: error
-        });
-      } else if (results.length === 0) {
-        resolve({
-          message: "No se encontraron fichajes con los parámetros especificados",
-          body: []
-        });
-      } else {
-        resolve({
-          message: "Fichajes obtenidos con éxito",
-          body: results
-        });
+      if (idUsuario) {
+        query += ' AND idUsuario = ?';
+        queryParams.push(idUsuario);
       }
-    });
+
+      if (fechaInicio) {
+        query += ' AND FechaHoraEntrada = ?';
+        queryParams.push(fechaInicio);
+      }
+
+      if (fechaFin) {
+        query += ' AND FechaHoraSalida = ?';
+        queryParams.push(fechaFin);
+      }
+
+      db.query(query, queryParams, function(error, results) {
+        if (error) {
+          reject({
+            message: "Error al obtener los fichajes",
+            error: error
+          });
+        } else if (results.length === 0) {
+          resolve({
+            message: "No se encontraron fichajes con los parámetros especificados",
+            tokenInfo: tokenVerification
+          });
+        } else {
+          resolve({
+            message: "Fichajes obtenidos con éxito",
+            body: results
+          });
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -62,36 +69,39 @@ exports.fichajesGET = function(idUsuario,fechaInicio,fechaFin) {
  * idFichaje Integer 
  * no response value expected for this operation
  **/
-exports.fichajesIdFichajePUT = function(body,idFichaje) {
-  return new Promise(function(resolve, reject) {
-    const secure = 'SELECT * FROM fichajes WHERE idFichaje = ?';
-    console.log('hola');
-    db.query(secure, idFichaje, function(error,results){
-      if(results.length == 0){
-        reject({
-          message: "No existe ningún fichaje con ID " + idFichaje, error: error
-        })
-      } else {
+exports.fichajesIdFichajePUT = function(req, body, idFichaje) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
 
-        const columns = Object.keys(body).join(' = ?, ');
-        const values = Object.values(body);
+      const secure = 'SELECT * FROM fichajes WHERE idFichaje = ?';
+      db.query(secure, idFichaje, function(error,results){
+        if(results.length == 0){
+          reject({
+            message: "No existe ningún fichaje con ID " + idFichaje, error: error
+          })
+        } else {
+          const query = 'UPDATE fichajes SET FechaHoraEntrada = ?, FechaHoraSalida = ?, HorasTrabajadas = ?, idTrabajo = ?, idUsuario = ?, GeolocalizacionLatitud = ?, GeolocalizacionLongitud = ? WHERE idFichaje = ?'
 
-        const query = 'UPDATE fichajes SET FechaHoraEntrada = ?, FechaHoraSalida = ?, HorasTrabajadas = ?, idTrabajo = ?, idUsuario = ?, GeolocalizacionLatitud = ?, GeolocalizacionLongitud = ? WHERE idFichaje = ?'
-
-        db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud, idFichaje], function(error, results){
-          // console.log(results);
-          if(results.affectedRows > 0){
-            resolve({
-              message: "Fichaje modificado con éxito", result: body 
-            })
-          } else {
-            reject({
-              message: "No se ha podido modificar el fichaje", error: error
-            })
-          }
-        })
-      }
-    })
+          db.query(query, [body.fechaHoraEntrada, body.fechaHoraSalida, body.horasTrabajadas, body.idTrabajo, body.idUsuario, body.geolocalizacionLatitud, body.geolocalizacionLongitud, idFichaje], function(error, results){
+            // console.log(results);
+            if(results.affectedRows > 0){
+              resolve({
+                message: "Fichaje modificado con éxito", result: body 
+              })
+            } else {
+              reject({
+                message: "No se ha podido modificar el fichaje", 
+                error: error,
+                tokenInfo: tokenVerification
+              })
+            }
+          })
+        }
+      })
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -103,26 +113,33 @@ exports.fichajesIdFichajePUT = function(body,idFichaje) {
  * body Fichaje 
  * no response value expected for this operation
  **/
-exports.fichajesPOST = function(body) {
-  return new Promise(function(resolve, reject) {
+exports.fichajesPOST = function(req, body) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenVerification = await verifyToken(req);
 
-    const columns = Object.keys(body).join(', ');
-    const placeholders = Object.keys(body).map(() => '?').join(', ');
-    const values = Object.values(body);
+      const columns = Object.keys(body).join(', ');
+      const placeholders = Object.keys(body).map(() => '?').join(', ');
+      const values = Object.values(body);
 
-    const query = 'INSERT INTO fichajes (' + columns + ') VALUES (' + placeholders + ')';
+      const query = 'INSERT INTO fichajes (' + columns + ') VALUES (' + placeholders + ')';
 
-    db.query(query, values, function(error, results){
-      if (error){
-        reject({
-          message:"Error al crear el fichaje", error: error
-        });
-      } else {
-        resolve({
-          message:"Fichaje creado con éxito", usuarioCreado: body
-        });
-      }
-    });
+      db.query(query, values, function(error, results){
+        if (error){
+          reject({
+            message:"Error al crear el fichaje", error: error
+          });
+        } else {
+          resolve({
+            message:"Fichaje creado con éxito", 
+            usuarioCreado: body,
+            tokenInfo: tokenVerification
+          });
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
