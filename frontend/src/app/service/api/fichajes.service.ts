@@ -55,8 +55,17 @@ export class FichajesService {
     return this.http.put(`${this.apiUrl}/fichajes/${idFichaje}`, body, { headers } )
   }
 
-  postFichajeUsuario(token: string, fechaEntrada: string, idUsuario: string, idTrabajo: string, geolocalizacionLongitud: number, geolocalizacionLatitud: number ){
+  postFichajeUsuario(
+    token: string, 
+    fechaEntrada: string, 
+    idUsuario: number, 
+    idTrabajo: number, 
+    geolocalizacionLongitud: number, 
+    geolocalizacionLatitud: number 
+  ){
     const headers = new HttpHeaders().set('Authorization', `${token}`);
+    
+    console.log(fechaEntrada);
 
     const body = {
       fechaHoraEntrada: fechaEntrada,
@@ -65,6 +74,8 @@ export class FichajesService {
       geolocalizacionLatitud: geolocalizacionLatitud,
       geolocalizacionLongitud: geolocalizacionLongitud
     }
+
+    console.log(body);
 
     return this.http.post(`${this.apiUrl}/fichajes`, body, { headers } )
   }

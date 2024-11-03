@@ -15,7 +15,7 @@ module.exports.trabajosDELETE = function trabajosDELETE (req, res, next, idTraba
 
 module.exports.trabajosGET = function trabajosGET (req, res, next) {
   Trabajos.trabajosGET(req)
-    .then(function (req, response) {
+    .then(function (response) {
       utils.writeJson(res, response);
     })
     .catch(function (response) {

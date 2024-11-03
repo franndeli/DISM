@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FichajesService } from '../service/api/fichajes.service';
+import { TrabajosService } from '../service/api/trabajos.service';
 import { ToastController } from '@ionic/angular';
+
+import { Geolocation } from '@capacitor/geolocation';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab2',
@@ -12,10 +16,20 @@ export class Tab2Page implements OnInit {
   fichajesRaw: any[] = [];
 
   horasTrabajadas: number = 0;
+  horaEntrada: any = '';
+
+  trabajoSeleccionado: number = 0;
+  trabajos: any[] = [];
 
   fechaActual!: string;
 
-  constructor(private fichajesService: FichajesService, private toastController: ToastController) {}
+  latitud: number = 0;
+  longitud: number = 0;
+
+  direccionGeorreferenciada: any;
+  urlNomination: any;
+
+  constructor(private fichajesService: FichajesService, private trabajosService: TrabajosService, private toastController: ToastController, private http: HttpClient) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -47,6 +61,13 @@ export class Tab2Page implements OnInit {
 
               console.log('Horas trabajadas desde el último registro:', this.horasTrabajadas);
             }
+          } else {
+            this.trabajosService.getTrabajos(token).subscribe(
+              (response) => {
+                console.log("Trabajos obtenidos", response);
+                this.trabajos = response.body;
+              }
+            );
           }
         },
         (error) => {
@@ -126,6 +147,54 @@ export class Tab2Page implements OnInit {
     } else {
       console.error('Token no encontrado, no se puede obtener fichajes');
     }
+  }
+
+  async realizarFichaje(){
+    const token = localStorage.getItem('token');
+    const usuario = parseInt(localStorage.getItem('idUsuario')!);
+
+    await this.locate();
+
+    // const fechaAhora = new Date();
+    // fechaAhora.setHours(fechaAhora.getHours() + 1);
+
+    // const fecha = fechaAhora.toISOString();
+
+    const fecha = new Date(this.horaEntrada);
+    const fechaISO = fecha.toISOString();
+
+    this.fichajesService.postFichajeUsuario(
+      token!,
+      fechaISO,
+      usuario!,
+      this.trabajoSeleccionado,
+      this.longitud,
+      this.latitud,
+    ).subscribe(
+      (response) => {
+        console.log("Fichaje realizado:", response)
+      }
+    )
+
+    location.reload();
+  }
+
+  async locate(){
+    const coordinates = await Geolocation.getCurrentPosition();
+
+    //Geolocalización
+    this.latitud = coordinates.coords.latitude;
+    this.longitud = coordinates.coords.longitude;
+    console.log("Posición actual", coordinates);
+
+    //Georreferenciación
+    this.urlNomination = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
+      + this.latitud + '&lon=' + this.longitud + '&addressdetails=1';
+    
+    this.http.get(this.urlNomination).subscribe((data: any) => {
+      this.direccionGeorreferenciada = data.display_name;
+      console.log('Address Data', this.direccionGeorreferenciada);
+    });
   }
 
 }
