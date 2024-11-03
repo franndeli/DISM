@@ -270,6 +270,13 @@ paths:
         schema:
           type: string
           format: date-time
+      - name: fechaFinIsNull
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
       responses:
         "200":
           description: Lista de fichajes obtenida correctamente.
@@ -320,7 +327,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FichajeCreate'
+              $ref: '#/components/schemas/FichajePut'
         required: true
       responses:
         "200":
@@ -415,10 +422,31 @@ components:
           type: string
           format: date-time
           example: 2024-10-21T08:00:00Z
+        idTrabajo:
+          type: integer
+          example: 1
+        idUsuario:
+          type: integer
+          example: 1
+        geolocalizacionLatitud:
+          type: number
+          format: float
+          example: 40.416775
+        geolocalizacionLongitud:
+          type: number
+          format: float
+          example: -3.70379
+    FichajePut:
+      type: object
+      properties:
+        fechaHoraEntrada:
+          type: string
+          format: date-time
+          example: 2024-10-21T08:00:00Z
         fechaHoraSalida:
           type: string
           format: date-time
-          example: 2024-10-21T17:00:00Z
+          example: 2024-10-21T08:00:00Z
         horasTrabajadas:
           type: integer
           example: 100

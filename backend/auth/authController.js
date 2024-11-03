@@ -7,10 +7,12 @@ const db = require('../utils/db');
 
 const login = (req, res) => {
     const { usuario, clave } = req.body;
+
+    console.log(req.body);
   
     // Verificar si el usuario existe en la base de datos
     const query = 'SELECT * FROM usuarios WHERE Usuario = ?';
-  
+
     db.query(query, [usuario], (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Error del servidor' });

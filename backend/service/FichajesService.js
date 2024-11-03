@@ -17,7 +17,7 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
     try {
       const tokenVerification = await verifyToken(req);
 
-      let query = 'SELECT * FROM fichajes WHERE 1=1';
+      let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
 
       const queryParams = [];
 
@@ -27,13 +27,24 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
       }
 
       if (fechaInicio) {
-        query += ' AND FechaHoraEntrada = ?';
-        queryParams.push(fechaInicio);
+        const fechaInicioDate = new Date(fechaInicio);
+        const fechaInicioMenos12Horas = new Date(fechaInicioDate);
+        fechaInicioMenos12Horas.setHours(fechaInicioMenos12Horas.getHours() - 12);
+
+        query += ' AND FechaHoraEntrada BETWEEN ? AND ?';
+        queryParams.push(fechaInicioMenos12Horas.toISOString(), fechaInicio);
       }
 
       if (fechaFin) {
+        console.log(fechaFin);
         query += ' AND FechaHoraSalida = ?';
         queryParams.push(fechaFin);
+      }
+
+      console.log(req.query.fechaFinIsNull);
+
+      if (req.query.fechaFinIsNull === true) {
+        query += ' AND FechaHoraSalida IS NULL';
       }
 
       db.query(query, queryParams, function(error, results) {

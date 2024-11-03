@@ -6,3 +6,5 @@
 
 # Ignorar las carpetas de node_modules
 node_modules/
+.angular/
+dist/

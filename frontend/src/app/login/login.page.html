@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Iniciar sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Iniciar sesión</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="login-container">
+    <ion-item>
+      <ion-label position="stacked">Usuario</ion-label>
+      <ion-input [(ngModel)]="username" type="text" placeholder="Introduce tu usuario" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input [(ngModel)]="password" type="password" placeholder="Introduce tu contraseña" required></ion-input>
+    </ion-item>
+
+    <ion-button expand="full" (click)="login()" color="primary" class="ion-margin-top" [disabled]="!username || !password">
+      Iniciar sesión
+    </ion-button>
+  </div>
+</ion-content>
+
+<style>
+  .login-container {
+    margin-top: 20vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  ion-item {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  ion-button {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  ion-text {
+    text-align: center;
+  }
+</style>
