@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { HostAttributeToken, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -11,18 +11,24 @@ export class FichajesService {
 
   constructor(private http: HttpClient) { }
 
-  getFichajesUsuario(token: string, idUsuario: string, FechaHoraInicio?: string, buscarFechaFinNula: boolean = false): Observable<any> {
+  getFichajesUsuario(token: string, idUsuario: string, fechaInicio?: string, horasMenos?: number, buscarFechaFinNula: boolean = false): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     
     let url = `${this.apiUrl}/fichajes?idUsuario=${encodeURIComponent(idUsuario)}`;
     
-    if (FechaHoraInicio) {
-      url += `&fechaInicio=${encodeURIComponent(FechaHoraInicio)}`;
+    if (fechaInicio) {
+      url += `&fechaInicio=${encodeURIComponent(fechaInicio)}`;
     }
 
     if (buscarFechaFinNula) {
       url += `&fechaFinIsNull=true`;
     }
+
+    if(horasMenos){
+      url += `&horasMenos=${horasMenos}`;
+    }
+
+    console.log(url);
 
     return this.http.get(url, { headers });
   }
@@ -71,8 +77,8 @@ export class FichajesService {
       fechaHoraEntrada: fechaEntrada,
       idUsuario: idUsuario,
       idTrabajo: idTrabajo,
+      geolocalizacionLongitud: geolocalizacionLongitud,
       geolocalizacionLatitud: geolocalizacionLatitud,
-      geolocalizacionLongitud: geolocalizacionLongitud
     }
 
     console.log(body);

@@ -277,6 +277,13 @@ paths:
         explode: true
         schema:
           type: boolean
+      - name: horasMenos
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
       responses:
         "200":
           description: Lista de fichajes obtenida correctamente.

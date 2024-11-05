@@ -26,12 +26,15 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
         queryParams.push(idUsuario);
       }
 
+      console.log(fechaInicio);
       if (fechaInicio) {
         const fechaInicioDate = new Date(fechaInicio);
         const fechaInicioMenos12Horas = new Date(fechaInicioDate);
-        fechaInicioMenos12Horas.setHours(fechaInicioMenos12Horas.getHours() - 12);
+        fechaInicioMenos12Horas.setHours(fechaInicioMenos12Horas.getHours() - req.query.horasMenos);
 
         query += ' AND FechaHoraEntrada BETWEEN ? AND ?';
+        console.log(fechaInicio);
+        
         queryParams.push(fechaInicioMenos12Horas.toISOString(), fechaInicio);
       }
 

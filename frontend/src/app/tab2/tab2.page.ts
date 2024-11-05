@@ -38,7 +38,7 @@ export class Tab2Page implements OnInit {
     this.fechaComprobacionRegistro();
 
     if (token) {
-      this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, true).subscribe(
+      this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, 12, true).subscribe(
         (response) => {
           console.log('Fichajes obtenidos:', response);
           if(response.body != undefined) {
@@ -53,7 +53,11 @@ export class Tab2Page implements OnInit {
 
             if (this.fichajes.length > 0) {
               const ultimoFichaje = this.fichajes[0];
-              const fechaEntrada = new Date(ultimoFichaje.FechaHoraEntrada);
+
+              const mama1 = new Date(ultimoFichaje.FechaHoraEntrada);
+              mama1.setHours(mama1.getHours() + 1);
+              const fechaEntrada = new Date(mama1);
+
               const fechaActual = new Date(this.fechaActual);
 
               const diferenciaMilisegundos = fechaActual.getTime() - fechaEntrada.getTime();
@@ -61,6 +65,8 @@ export class Tab2Page implements OnInit {
 
               console.log('Horas trabajadas desde el último registro:', this.horasTrabajadas);
             }
+
+            this.obtenerDireccion();
           } else {
             this.trabajosService.getTrabajos(token).subscribe(
               (response) => {
@@ -115,10 +121,17 @@ export class Tab2Page implements OnInit {
 
     const fichaje = this.fichajesRaw[0];
 
+    console.log(fichaje);
+
     const fechaAhora = new Date();
     fechaAhora.setHours(fechaAhora.getHours() + 1);
 
     const fecha = fechaAhora.toISOString();
+
+    const fechaArreglada = new Date(fichaje.FechaHoraEntrada);
+    fechaArreglada.setHours(fechaArreglada.getHours()+ 1);
+
+    const mama = fechaArreglada.toISOString();
 
     console.log(fichaje);
 
@@ -126,7 +139,7 @@ export class Tab2Page implements OnInit {
       this.fichajesService.putFichajeUsuario(
         token, 
         fichaje.idFichaje, 
-        fichaje.FechaHoraEntrada,
+        mama,
         fecha,
         this.horasTrabajadas,
         usuario,
@@ -138,7 +151,7 @@ export class Tab2Page implements OnInit {
           console.log("Fichaje finalizado", response);
           this.presentToast("Fichaje finalizado con éxito");
           // setTimeout(1500);
-          setTimeout (() => location.reload(), 1500);
+          // setTimeout (() => location.reload(), 1500);
         },
         (error) => {
           console.error('Error al finalizar el fichaje:', error);
@@ -161,6 +174,8 @@ export class Tab2Page implements OnInit {
     // const fecha = fechaAhora.toISOString();
 
     const fecha = new Date(this.horaEntrada);
+    fecha.setHours(fecha.getHours() + 1);
+
     const fechaISO = fecha.toISOString();
 
     this.fichajesService.postFichajeUsuario(
@@ -176,7 +191,7 @@ export class Tab2Page implements OnInit {
       }
     )
 
-    location.reload();
+    // location.reload();
   }
 
   async locate(){
@@ -187,10 +202,17 @@ export class Tab2Page implements OnInit {
     this.longitud = coordinates.coords.longitude;
     console.log("Posición actual", coordinates);
 
+    console.log(this.latitud, this.longitud);
+  }
+
+  async obtenerDireccion(){
+    const latitud = this.fichajesRaw[0].GeolocalizacionLatitud
+    const longitud = this.fichajesRaw[0].GeolocalizacionLongitud
+
     //Georreferenciación
     this.urlNomination = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
-      + this.latitud + '&lon=' + this.longitud + '&addressdetails=1';
-    
+      + latitud + '&lon=' + longitud + '&addressdetails=1';
+
     this.http.get(this.urlNomination).subscribe((data: any) => {
       this.direccionGeorreferenciada = data.display_name;
       console.log('Address Data', this.direccionGeorreferenciada);
