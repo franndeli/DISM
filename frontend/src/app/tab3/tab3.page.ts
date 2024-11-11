@@ -14,6 +14,8 @@ export class Tab3Page implements OnInit {
   longitud: number = 0;
 
   fechaActual!: string;
+  dia: any;
+  mes: any;
 
   direccionGeorreferenciada: any;
   urlNom: any;
@@ -25,31 +27,36 @@ export class Tab3Page implements OnInit {
     const idUsuario = localStorage.getItem('idUsuario');
 
     this.fechaComprobacionRegistro();
+    this.setFecha();
 
     const hora = parseInt(this.fechaActual.split('T')[1].split('.')[0]);
+    // this.dia = parseInt(this.fechaActual.split('-')[1].split('-')[0]);
+    // this.mes = parseInt(this.fechaActual.split('-')[2].split('T')[0]);
     
-    console.log('Hora:', hora);
+    // console.log('Hora:', hora);
 
     if (token) {
       this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, hora).subscribe(
         async (response) => {
-          console.log('Fichajes obtenidos:', response);
-          this.fichajes = response.body.map((fichaje: any) => ({
-            ...fichaje,
-            FechaHoraEntrada: this.convertirFechaFormatoLegible(fichaje.FechaHoraEntrada),
-            FechaHoraSalida: fichaje.FechaHoraSalida ? this.convertirFechaFormatoLegible(fichaje.FechaHoraSalida) : null,
-            direccion: ''
-          }));
+          if(response.body != undefined) {
+            console.log('Fichajes obtenidos:', response);
+            this.fichajes = response.body.map((fichaje: any) => ({
+              ...fichaje,
+              FechaHoraEntrada: this.convertirFechaFormatoLegible(fichaje.FechaHoraEntrada),
+              FechaHoraSalida: fichaje.FechaHoraSalida ? this.convertirFechaFormatoLegible(fichaje.FechaHoraSalida) : null,
+              direccion: ''
+            }));
 
-          // Iterar sobre los fichajes y obtener la dirección
-          for (let fichaje of this.fichajes) {
-            if (fichaje.GeolocalizacionLatitud && fichaje.GeolocalizacionLongitud) {
-              fichaje.direccion = await this.obtenerDireccion(
-                fichaje.GeolocalizacionLatitud,
-                fichaje.GeolocalizacionLongitud
-              );
+            // Iterar sobre los fichajes y obtener la dirección
+            for (let fichaje of this.fichajes) {
+              if (fichaje.GeolocalizacionLatitud && fichaje.GeolocalizacionLongitud) {
+                fichaje.direccion = await this.obtenerDireccion(
+                  fichaje.GeolocalizacionLatitud,
+                  fichaje.GeolocalizacionLongitud
+                );
+              }
+              // console.log(fichaje);
             }
-            console.log(fichaje);
           }
         },
         (error) => {
@@ -75,7 +82,7 @@ export class Tab3Page implements OnInit {
 
   fechaComprobacionRegistro(){
     const fecha = new Date();
-    fecha.setHours(fecha.getHours() + 1);
+    fecha.setHours(fecha.getHours());
 
     this.fechaActual = fecha.toISOString();
   }
@@ -84,7 +91,7 @@ export class Tab3Page implements OnInit {
     const urlNom = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
       + lat + '&lon=' + lon + '&addressdetails=1';
 
-    console.log(urlNom);
+    // console.log(urlNom);
 
     return new Promise((resolve, reject) => {
       this.http.get(urlNom).subscribe(
@@ -98,5 +105,16 @@ export class Tab3Page implements OnInit {
         }
       );
     });
+  }
+
+  setFecha() {
+    const fecha = new Date();
+    this.dia = String(fecha.getDate()).padStart(2, '0');
+    
+    const meses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    this.mes = meses[fecha.getMonth()];
   }
 }

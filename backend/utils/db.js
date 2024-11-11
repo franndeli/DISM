@@ -5,7 +5,8 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'prac1_dism'
+  database: 'prac1_dism',
+  timezone: 'Z'
 });
 
 db.connect(err => {
@@ -13,7 +14,7 @@ db.connect(err => {
     console.error('Error al conectar a la base de datos:', err);
     process.exit(1);
   }
-  console.log('Conectado a la base de datos');
+  // console.log('Conectado a la base de datos');
 });
 
 module.exports = db;

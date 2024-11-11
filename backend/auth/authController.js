@@ -8,7 +8,7 @@ const db = require('../utils/db');
 const login = (req, res) => {
     const { usuario, clave } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
   
     // Verificar si el usuario existe en la base de datos
     const query = 'SELECT * FROM usuarios WHERE Usuario = ?';
@@ -68,7 +68,7 @@ const login = (req, res) => {
           return reject({ message: 'Token inválido', error: err });
         }
   
-        console.log('Token correcto');
+        // console.log('Token correcto');
         
         req.userId = decoded.id;
         req.userRole = decoded.role;

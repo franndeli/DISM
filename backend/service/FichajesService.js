@@ -18,7 +18,6 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
       const tokenVerification = await verifyToken(req);
 
       let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
-
       const queryParams = [];
 
       if (idUsuario) {
@@ -26,31 +25,25 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
         queryParams.push(idUsuario);
       }
 
-      console.log(fechaInicio);
       if (fechaInicio) {
         const fechaInicioDate = new Date(fechaInicio);
         const fechaInicioMenos12Horas = new Date(fechaInicioDate);
         fechaInicioMenos12Horas.setHours(fechaInicioMenos12Horas.getHours() - req.query.horasMenos);
 
         query += ' AND FechaHoraEntrada BETWEEN ? AND ?';
-        console.log(fechaInicio);
-        
         queryParams.push(fechaInicioMenos12Horas.toISOString(), fechaInicio);
       }
 
       if (fechaFin) {
-        console.log(fechaFin);
         query += ' AND FechaHoraSalida = ?';
         queryParams.push(fechaFin);
       }
-
-      console.log(req.query.fechaFinIsNull);
 
       if (req.query.fechaFinIsNull === true) {
         query += ' AND FechaHoraSalida IS NULL';
       }
 
-      db.query(query, queryParams, function(error, results) {
+      db.query(query, queryParams, async function(error, results) {
         if (error) {
           reject({
             message: "Error al obtener los fichajes",
@@ -62,9 +55,45 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
             tokenInfo: tokenVerification
           });
         } else {
+          const fichajesActualizados = [];
+
+          // Verificar cada fichaje para ver si cumple la condición de actualizar
+          for (let fichaje of results) {
+            if (fichaje.FechaHoraSalida === null) {
+              const fechaHoraEntrada = new Date(fichaje.FechaHoraEntrada);
+              const fechaActual = new Date();
+              const diferenciaHoras = (fechaActual - fechaHoraEntrada) / (1000 * 60 * 60);
+
+              if (diferenciaHoras >= 12) {
+                // Configura la FechaHoraSalida a 12 horas después de FechaHoraEntrada
+                const fechaHoraSalida = new Date(fechaHoraEntrada);
+                fechaHoraSalida.setHours(fechaHoraSalida.getHours() + 12);
+
+                const horasTrabajadas = 12;
+
+                // Llamada para actualizar el fichaje con el método PUT
+                await exports.fichajesIdFichajePUT(req, {
+                  fechaHoraEntrada: fichaje.FechaHoraEntrada,
+                  fechaHoraSalida: fechaHoraSalida.toISOString(),
+                  horasTrabajadas: horasTrabajadas,
+                  idTrabajo: fichaje.idTrabajo,
+                  idUsuario: fichaje.idUsuario,
+                  geolocalizacionLatitud: fichaje.GeolocalizacionLatitud,
+                  geolocalizacionLongitud: fichaje.GeolocalizacionLongitud
+                }, fichaje.idFichaje);
+
+                // Actualizar el objeto en resultados
+                fichaje.FechaHoraSalida = fechaHoraSalida.toISOString();
+                fichaje.HorasTrabajadas = horasTrabajadas;
+                fichajesActualizados.push(fichaje);
+              }
+            }
+          }
+
           resolve({
-            message: "Fichajes obtenidos con éxito",
-            body: results
+            message: "Fichajes obtenidos y actualizados si correspondía",
+            body: results,
+            actualizados: fichajesActualizados
           });
         }
       });
@@ -72,7 +101,7 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
       reject(error);
     }
   });
-}
+};
 
 
 /**
@@ -144,11 +173,50 @@ exports.fichajesPOST = function(req, body) {
             message:"Error al crear el fichaje", error: error
           });
         } else {
-          resolve({
-            message:"Fichaje creado con éxito", 
-            usuarioCreado: body,
-            tokenInfo: tokenVerification
-          });
+          // console.log(results);
+          const idFichaje = results.insertId;
+          // console.log(body);
+          const fechaHoraEntrada = new Date(body.fechaHoraEntrada);
+          // console.log(fechaHoraEntrada);
+          const papa = new Date();
+          const fechaActual = papa.setHours(papa.getHours());
+
+          const diferenciaHoras = (fechaActual - fechaHoraEntrada) / (1000 * 60 * 60);
+          // console.log(diferenciaHoras);
+
+          if (diferenciaHoras > 12) {
+            const fechaHoraSalida = new Date(fechaHoraEntrada);
+            fechaHoraSalida.setHours(fechaHoraSalida.getHours() + 12);
+
+            const horasTrabajadas = 12;
+
+            exports.fichajesIdFichajePUT(req, {
+              fechaHoraEntrada: body.fechaHoraEntrada,
+              fechaHoraSalida: fechaHoraSalida.toISOString(),
+              horasTrabajadas: horasTrabajadas,
+              idTrabajo: body.idTrabajo,
+              idUsuario: body.idUsuario,
+              geolocalizacionLatitud: body.geolocalizacionLatitud,
+              geolocalizacionLongitud: body.geolocalizacionLongitud
+            }, idFichaje).then((updateResponse) => {
+              resolve({
+                message: "Fichaje creado y actualizado con éxito",
+                usuarioCreado: body,
+                updateResult: updateResponse
+              });
+            }).catch((updateError) => {
+              reject({
+                message: "Fichaje creado pero hubo un error en la actualización",
+                error: updateError
+              });
+            });
+          } else {
+            resolve({
+              message: "Fichaje creado con éxito",
+              usuarioCreado: body,
+              tokenInfo: tokenVerification
+            });
+          }
         }
       });
     } catch (error) {

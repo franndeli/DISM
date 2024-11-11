@@ -28,7 +28,7 @@ export class FichajesService {
       url += `&horasMenos=${horasMenos}`;
     }
 
-    console.log(url);
+    // console.log(url);
 
     return this.http.get(url, { headers });
   }
@@ -56,7 +56,7 @@ export class FichajesService {
       geolocalizacionLongitud: geolocalizacionLongitud
     }
 
-    console.log(body);
+    // console.log(body);
 
     return this.http.put(`${this.apiUrl}/fichajes/${idFichaje}`, body, { headers } )
   }
@@ -71,7 +71,7 @@ export class FichajesService {
   ){
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     
-    console.log(fechaEntrada);
+    // console.log(fechaEntrada);
 
     const body = {
       fechaHoraEntrada: fechaEntrada,
@@ -81,7 +81,7 @@ export class FichajesService {
       geolocalizacionLatitud: geolocalizacionLatitud,
     }
 
-    console.log(body);
+    // console.log(body);
 
     return this.http.post(`${this.apiUrl}/fichajes`, body, { headers } )
   }

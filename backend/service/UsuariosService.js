@@ -77,7 +77,7 @@ exports.usuariosDELETE = function(req, idUsuario) {
             error: error
           })
         }
-        // console.log(results);
+        // // console.log(results);
       })
     } catch (error) {
       reject(error);
@@ -139,7 +139,7 @@ exports.usuariosIdUsuarioPUT = function(req, body, idUsuario) {
 
       const secure = 'SELECT * FROM usuarios WHERE idUsuario = ?';
       db.query(secure, idUsuario, function(error,results){
-        // console.log(results);
+        // // console.log(results);
         if(results.length == 0){
           reject({
             message: "No existe ningún usuario con ID " + idUsuario, error: error
@@ -156,7 +156,7 @@ exports.usuariosIdUsuarioPUT = function(req, body, idUsuario) {
               const query = 'UPDATE usuarios SET idUsuario = ?, Nombre = ?, Usuario = ?, Clave = ?, Tipo = ? WHERE idUsuario = ?'
 
               db.query(query, [body.idUsuario, body.nombre, body.usuario, body.clave, body.tipo, idUsuario], function(error, results){
-                // console.log(results);
+                // // console.log(results);
                 if(results.affectedRows > 0){
                   resolve({
                     message: "Usuario modificado con éxito", 

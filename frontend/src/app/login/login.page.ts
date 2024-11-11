@@ -31,7 +31,7 @@ export class LoginPage {
           if(response.id == undefined){
             this.presentToast(response.message);
           } else {
-            console.log('Login:', response);
+            // console.log('Login:', response);
           
             localStorage.setItem('idUsuario', response.id);
             localStorage.setItem('token', response.token); 

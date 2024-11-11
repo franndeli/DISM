@@ -2,10 +2,11 @@
 
 var path = require('path');
 var http = require('http');
+// var cors = require('cors');
+
+// const express = require("express");
 
 var oas3Tools = require('oas3-tools');
-
-// var cors = require('cors');
 var serverPort = 8080;
 
 // swaggerRouter configuration
@@ -17,6 +18,12 @@ var options = {
 
 var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 var app = expressAppConfig.getApp();
+
+// app.use(express.json());
+
+// app.use(cors());
+
+// app.options('*', cors())
 
 // app.use(cors());
 // app.options('*', cors());

@@ -39,7 +39,7 @@ export class Tab2Page implements OnInit {
 
     if (token) {
       this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, 12, true).subscribe(
-        (response) => {
+        async (response) => {
           console.log('Fichajes obtenidos:', response);
           if(response.body != undefined) {
             this.fichajesRaw = response.body;
@@ -55,7 +55,7 @@ export class Tab2Page implements OnInit {
               const ultimoFichaje = this.fichajes[0];
 
               const mama1 = new Date(ultimoFichaje.FechaHoraEntrada);
-              mama1.setHours(mama1.getHours() + 1);
+              mama1.setHours(mama1.getHours());
               const fechaEntrada = new Date(mama1);
 
               const fechaActual = new Date(this.fechaActual);
@@ -63,17 +63,22 @@ export class Tab2Page implements OnInit {
               const diferenciaMilisegundos = fechaActual.getTime() - fechaEntrada.getTime();
               this.horasTrabajadas = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60));
 
-              console.log('Horas trabajadas desde el último registro:', this.horasTrabajadas);
+              // console.log('Horas trabajadas desde el último registro:', this.horasTrabajadas);
             }
 
-            this.obtenerDireccion();
+            this.direccionGeorreferenciada = await this.obtenerDireccion(this.fichajesRaw[0].GeolocalizacionLatitud, this.fichajesRaw[0].GeolocalizacionLongitud);
           } else {
             this.trabajosService.getTrabajos(token).subscribe(
               (response) => {
-                console.log("Trabajos obtenidos", response);
+                // console.log("Trabajos obtenidos", response);
                 this.trabajos = response.body;
               }
             );
+            this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, 3490534578943870, true).subscribe(
+              (response) => {
+                console.log('Fichajes fuera de las 12 horas:', response);
+              }
+            )
           }
         },
         (error) => {
@@ -88,7 +93,7 @@ export class Tab2Page implements OnInit {
 
   fechaComprobacionRegistro(){
     const fecha = new Date();
-    fecha.setHours(fecha.getHours() + 1);
+    fecha.setHours(fecha.getHours());
 
     this.fechaActual = fecha.toISOString();
   }
@@ -121,19 +126,19 @@ export class Tab2Page implements OnInit {
 
     const fichaje = this.fichajesRaw[0];
 
-    console.log(fichaje);
+    // console.log(fichaje);
 
     const fechaAhora = new Date();
-    fechaAhora.setHours(fechaAhora.getHours() + 1);
+    fechaAhora.setHours(fechaAhora.getHours());
 
     const fecha = fechaAhora.toISOString();
 
     const fechaArreglada = new Date(fichaje.FechaHoraEntrada);
-    fechaArreglada.setHours(fechaArreglada.getHours()+ 1);
+    fechaArreglada.setHours(fechaArreglada.getHours());
 
     const mama = fechaArreglada.toISOString();
 
-    console.log(fichaje);
+    // console.log(fichaje);
 
     if (token) {
       this.fichajesService.putFichajeUsuario(
@@ -148,10 +153,10 @@ export class Tab2Page implements OnInit {
         fichaje.GeolocalizacionLongitud
       ).subscribe(
         (response) => {
-          console.log("Fichaje finalizado", response);
+          // console.log("Fichaje finalizado", response);
           this.presentToast("Fichaje finalizado con éxito");
           // setTimeout(1500);
-          // setTimeout (() => location.reload(), 1500);
+          setTimeout (() => location.reload(), 1500);
         },
         (error) => {
           console.error('Error al finalizar el fichaje:', error);
@@ -174,7 +179,7 @@ export class Tab2Page implements OnInit {
     // const fecha = fechaAhora.toISOString();
 
     const fecha = new Date(this.horaEntrada);
-    fecha.setHours(fecha.getHours() + 1);
+    fecha.setHours(fecha.getHours());
 
     const fechaISO = fecha.toISOString();
 
@@ -187,11 +192,11 @@ export class Tab2Page implements OnInit {
       this.latitud,
     ).subscribe(
       (response) => {
-        console.log("Fichaje realizado:", response)
+        // console.log("Fichaje realizado:", response)
       }
     )
 
-    // location.reload();
+    location.reload();
   }
 
   async locate(){
@@ -200,23 +205,46 @@ export class Tab2Page implements OnInit {
     //Geolocalización
     this.latitud = coordinates.coords.latitude;
     this.longitud = coordinates.coords.longitude;
-    console.log("Posición actual", coordinates);
+    // console.log("Posición actual", coordinates);
 
-    console.log(this.latitud, this.longitud);
+    // console.log(this.latitud, this.longitud);
   }
 
-  async obtenerDireccion(){
-    const latitud = this.fichajesRaw[0].GeolocalizacionLatitud
-    const longitud = this.fichajesRaw[0].GeolocalizacionLongitud
+  async obtenerDireccion(lat: number, lon: number): Promise<string> {
+    const urlNom = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
+      + lat + '&lon=' + lon + '&addressdetails=1';
 
-    //Georreferenciación
-    this.urlNomination = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
-      + latitud + '&lon=' + longitud + '&addressdetails=1';
+    // console.log(urlNom);
 
-    this.http.get(this.urlNomination).subscribe((data: any) => {
-      this.direccionGeorreferenciada = data.display_name;
-      console.log('Address Data', this.direccionGeorreferenciada);
+    return new Promise((resolve, reject) => {
+      this.http.get(urlNom).subscribe(
+        (data: any) => {
+          const direccion = data.display_name || 'Dirección no disponible';
+          resolve(direccion);
+        },
+        (error) => {
+          console.error('Error al obtener la dirección:', error);
+          resolve('Error al obtener la dirección');
+        }
+      );
     });
   }
+
+  // async obtenerDireccion(){
+  //   const latitud = this.fichajesRaw[0].GeolocalizacionLatitud
+  //   const longitud = this.fichajesRaw[0].GeolocalizacionLongitud
+
+  //   // console.log(latitud, longitud);
+  //   //Georreferenciación
+  //   this.urlNomination = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
+  //     + latitud + '&lon=' + longitud + '&addressdetails=1';
+
+  //   // console.log(this.urlNomination);
+
+  //   this.http.get(this.urlNomination).subscribe((data: any) => {
+  //     this.direccionGeorreferenciada = data.display_name;
+  //     // console.log('Address Data', this.direccionGeorreferenciada);
+  //   });
+  // }
 
 }
