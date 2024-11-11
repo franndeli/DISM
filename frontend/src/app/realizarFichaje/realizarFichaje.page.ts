@@ -7,11 +7,11 @@ import { Geolocation } from '@capacitor/geolocation';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-realizarFichaje',
+  templateUrl: 'realizarFichaje.page.html',
+  styleUrls: ['realizarFichaje.page.scss']
 })
-export class Tab2Page implements OnInit {
+export class realizarFichaje implements OnInit {
   fichajes: any[] = [];
   fichajesRaw: any[] = [];
 

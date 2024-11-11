@@ -37,7 +37,7 @@ export class LoginPage {
             localStorage.setItem('token', response.token); 
             localStorage.setItem('rol', response.role); 
             
-            this.router.navigate(['tabs']);
+            this.router.navigate(['usuarios']);
           } 
         },
         (error) => {

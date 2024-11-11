@@ -3,11 +3,11 @@ import { FichajesService } from '../../service/api/fichajes.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: './tab3.page.html',
-  styleUrls: ['./tab3.page.scss']
+  selector: 'app-consultarFichaje',
+  templateUrl: './consultarFichaje.page.html',
+  styleUrls: ['./consultarFichaje.page.scss']
 })
-export class Tab3Page implements OnInit {
+export class consultarFichaje implements OnInit {
   fichajes: any[] = [];
 
   latitud: number = 0;

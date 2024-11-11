@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss']
+  selector: 'app-usuarios',
+  templateUrl: 'usuarios.page.html',
+  styleUrls: ['usuarios.page.scss']
 })
-export class TabsPage {
+export class UsuariosPage {
 
   constructor(private router: Router, private alertController: AlertController) {}
   
