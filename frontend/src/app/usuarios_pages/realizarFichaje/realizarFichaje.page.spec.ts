@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
-import { consultarFichaje } from './consultarFichaje.page';
+import { realizarFichaje } from './realizarFichaje.page';
 
-describe('consultarFichaje', () => {
-  let component: consultarFichaje;
-  let fixture: ComponentFixture<consultarFichaje>;
+describe('realizarFichaje', () => {
+  let component: realizarFichaje;
+  let fixture: ComponentFixture<realizarFichaje>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [consultarFichaje],
+      declarations: [realizarFichaje],
       imports: [IonicModule.forRoot(), ExploreContainerComponentModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(consultarFichaje);
+    fixture = TestBed.createComponent(realizarFichaje);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

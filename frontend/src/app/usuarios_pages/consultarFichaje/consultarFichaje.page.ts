@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FichajesService } from '../../service/api/fichajes.service';
+import { FichajesService } from '../../../service/api/fichajes.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({

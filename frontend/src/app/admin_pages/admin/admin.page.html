@@ -1,0 +1,37 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Página admin</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-tabs>
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="inicio-admin" href="/admin/inicio-admin">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="gestion-fichajes" href="/admin/gestion-fichajes">
+      <ion-icon name="swap-horizontal"></ion-icon>
+      <ion-label>Gestionar fichajes</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="gestion-trabajos" href="/admin/gestion-trabajos">
+      <ion-icon name="archive"></ion-icon>
+      <ion-label>Gestionar trabajos</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="gestion-usuarios" href="/admin/gestion-usuarios">
+      <ion-icon name="archive"></ion-icon>
+      <ion-label>Gestionar usuarios</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>
+
