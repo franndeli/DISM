@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FichajesService } from '../service/api/fichajes.service';
-import { TrabajosService } from '../service/api/trabajos.service';
+import { FichajesService } from '../../service/api/fichajes.service';
+import { TrabajosService } from '../../service/api/trabajos.service';
 import { ToastController } from '@ionic/angular';
 
 import { Geolocation } from '@capacitor/geolocation';
