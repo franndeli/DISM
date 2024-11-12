@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
+import { AuthGuard } from 'src/authGuard/auth.guard';
 import { AdminPage } from './admin.page';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminPage,
+    canActivate: [AuthGuard],
+    data: {rol: 'Administrador', redirect: 'usuarios'},
     children: [
       {
         path: 'inicio-admin',

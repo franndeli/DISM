@@ -8,11 +8,23 @@ import { ToastController } from '@ionic/angular';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
   username!: string;
   password!: string;
 
   constructor(private authService: AuthService, private router: Router, private toastController: ToastController) {}
+  
+  ngOnInit(): void {
+   if(localStorage.getItem('idUsuario')){
+    localStorage.removeItem('idUsuario')
+   }
+   if(localStorage.getItem('token')){
+    localStorage.removeItem('token')
+   }
+   if(localStorage.getItem('rol')){
+    localStorage.removeItem('rol')
+   }
+  }
 
   async presentToast(message: string) {
     const toast = await this.toastController.create({
@@ -37,7 +49,12 @@ export class LoginPage {
             localStorage.setItem('token', response.token); 
             localStorage.setItem('rol', response.role); 
             
-            this.router.navigate(['usuarios']);
+            if(response.role === 'Usuario'){
+              this.router.navigate(['usuarios']);
+            }
+            else {
+              this.router.navigate(['admin']);
+            }
           } 
         },
         (error) => {
