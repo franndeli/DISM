@@ -15,7 +15,7 @@ const routes: Routes = [
         loadChildren: () => import('../inicio-admin/inicio-admin.module').then(m => m.InicioAdminPageModule)
       },
       {
-        path: 'gestion-fichaje',
+        path: 'gestion-fichajes',
         loadChildren: () => import('../gestion-fichajes/gestion-fichajes.module').then(m => m.GestionFichajesPageModule)
       },
       {
