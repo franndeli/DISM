@@ -10,4 +10,19 @@
       <ion-title size="large">Gestión de usuarios</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ng-content *ngIf="usuarios.length > 0;">
+    <div *ngFor="let usuario of usuarios">
+      <ion-card>
+        <ion-card-header>
+          ID de Usuario: {{usuario.idUsuario}}
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            <strong>Nombre</strong> {{usuario.Nombre}}
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ng-content>
 </ion-content>

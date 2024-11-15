@@ -30,10 +30,6 @@ export class consultarFichaje implements OnInit {
     this.setFecha();
 
     const hora = parseInt(this.fechaActual.split('T')[1].split('.')[0]);
-    // this.dia = parseInt(this.fechaActual.split('-')[1].split('-')[0]);
-    // this.mes = parseInt(this.fechaActual.split('-')[2].split('T')[0]);
-    
-    // console.log('Hora:', hora);
 
     if (token) {
       this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, hora).subscribe(

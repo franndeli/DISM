@@ -34,11 +34,10 @@
   <ng-template #noFichajes>
     <form>
       <ion-item>
-        <ion-label position="stacked">Hora de Entrada</ion-label>
-        <ion-datetime displayFormat="YYYY-MM-DDTHH:mm:ss" [(ngModel)]="horaEntrada" name="horaEntrada"></ion-datetime>
+        <ion-datetime locale="es-ES" time-label="Hora" displayFormat="YYYY-MM-DDTHH:mm:ss" [(ngModel)]="horaEntrada" name="horaEntrada"></ion-datetime>
       </ion-item>
 
-      <ion-item>
+      <ion-item class="ion-padding">
         <ion-label position="stacked">Trabajos</ion-label>
         <ion-select [(ngModel)]="trabajoSeleccionado" name="trabajoSeleccionado" placeholder="Selecciona un trabajo" interface="popover">
           <ion-select-option *ngFor="let trabajo of trabajos" [value]="trabajo.idTrabajo">
@@ -47,7 +46,17 @@
         </ion-select>
       </ion-item>
 
-      <ion-button expand="full" color="primary" type="submit" (click)="realizarFichaje()" [disabled]="!trabajoSeleccionado || !horaEntrada">Registrar Fichaje</ion-button>
+      <div class="center-container">
+        <ion-button 
+          expand="block" 
+          color="primary" 
+          type="submit" 
+          (click)="realizarFichaje()" 
+          [disabled]="!trabajoSeleccionado || !horaEntrada">
+          Registrar Fichaje
+        </ion-button>
+      </div>
+      
     </form>
   </ng-template>
 </ion-content>
@@ -63,4 +72,18 @@
     width: 80%;
     max-width: 400px;
   }
+
+  ion-datetime {
+    --background: #a0a0a0;
+
+    border-radius: 16px;
+    box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+  }
+
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+
 </style>

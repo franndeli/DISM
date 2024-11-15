@@ -10,4 +10,50 @@
       <ion-title size="large">Gestión de fichajes</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ng-content *ngIf="fichajes.length > 0; else noFichajes">
+    <div *ngFor="let fichaje of fichajes">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Detalles del Fichaje</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Fecha de Entrada:</strong> {{ fichaje.FechaHoraEntrada }}</p>
+          <p><strong>Horas Trabajadas:</strong> {{ fichaje.horasTrabajadas }}</p>
+          <p><strong>Trabajo:</strong> {{ fichaje.trabajoNombre }}</p>
+          <p><strong>Dirección:</strong> {{ fichaje.direccion }}</p>
+
+          <div class="divider"></div>
+
+          <div class="button-container">
+            <ion-button 
+              fill="clear" 
+              color="primary" 
+              (click)="editarFichaje(fichaje)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Editar
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ng-content>
+
+  <ng-template #noFichajes>
+    <p>No hay fichajes</p>
+  </ng-template>
 </ion-content>
+
+<style>
+  .divider {
+    height: 1px;
+    background-color: var(--ion-color-light);
+    margin: 16px 0;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+</style>

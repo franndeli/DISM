@@ -14,7 +14,11 @@ export class FichajesService {
   getFichajesUsuario(token: string, idUsuario: string, fechaInicio?: string, horasMenos?: number, buscarFechaFinNula: boolean = false): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     
-    let url = `${this.apiUrl}/fichajes?idUsuario=${encodeURIComponent(idUsuario)}`;
+    let url = `${this.apiUrl}/fichajes`;
+
+    if(idUsuario){
+      url += `?idUsuario=${encodeURIComponent(idUsuario)}`;
+    }
     
     if (fechaInicio) {
       url += `&fechaInicio=${encodeURIComponent(fechaInicio)}`;

@@ -10,4 +10,11 @@
       <ion-title size="large">Gestión de trabajos</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ng-content *ngIf = "trabajos.length > 0;">
+    <div *ngFor="let trabajo of trabajos">
+      <p>{{trabajo.Nombre}}</p>
+    </div>
+  </ng-content>
+
 </ion-content>
