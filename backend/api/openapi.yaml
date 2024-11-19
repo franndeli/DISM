@@ -52,6 +52,17 @@ paths:
       summary: Obtener todos los usuarios
       description: Retorna una lista de todos los usuarios (solo admin).
       operationId: usuariosGET
+      parameters:
+      - name: rol
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Administrador
+          - Usuario
       responses:
         "200":
           description: Lista de usuarios obtenida correctamente.

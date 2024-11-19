@@ -10,8 +10,9 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) { }
 
-  getUsuarios(token: string): Observable<any> {
+  getUsuarios(token: string, role: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
+    
     return this.http.get(`${this.apiUrl}/usuarios`, {headers} );
   }
 }

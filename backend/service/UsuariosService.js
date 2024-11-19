@@ -95,13 +95,20 @@ exports.usuariosDELETE = function(req, idUsuario) {
  **/
 
 // Cambia req por token en la firma de la función
-exports.usuariosGET = function(req, res) {
+exports.usuariosGET = function(req, role) {
   return new Promise(async (resolve, reject) => {
     try {
       const tokenVerification = await verifyToken(req);
 
-      const query = 'SELECT * FROM usuarios';
-      db.query(query, function(error, results) {
+      let query = 'SELECT * FROM usuarios';
+      const queryParams = [];
+
+      if(role) {
+        queryParams += ' WHERE usuarip.tipo = ?'
+        queryParams.push(role);
+      }
+
+      db.query(query, queryParams, function(error, results) {
         if (error) {
           reject({
             message: "Error al obtener los usuarios",
