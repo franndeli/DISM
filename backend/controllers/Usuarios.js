@@ -43,6 +43,16 @@ module.exports.usuariosGET = function usuariosGET (req, res, next) {
     });
 };
 
+module.exports.usuariosIdUsuarioGET = function usuariosIdUsuarioGET (req, res, next, idUsuario) {
+  Usuarios.usuariosIdUsuarioGET(req, res, idUsuario)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.usuariosIdUsuarioPUT = function usuariosIdUsuarioPUT (req, res, next, body, idUsuario) {
   Usuarios.usuariosIdUsuarioPUT(req, body, idUsuario)
     .then(function (response) {

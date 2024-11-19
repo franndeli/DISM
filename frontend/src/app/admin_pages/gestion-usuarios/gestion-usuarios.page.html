@@ -11,11 +11,16 @@
     </ion-toolbar>
   </ion-header>
 
-  <ng-content *ngIf="usuarios.length > 0;">
+  <ion-button expand="full" (click)="createUser()">Crear Nuevo Usuario</ion-button>
+
+  <div *ngIf="usuarios && usuarios.length > 0">
     <div *ngFor="let usuario of usuarios">
       <ion-card>
         <ion-card-header>
           ID de Usuario: {{usuario.idUsuario}}
+          <ion-button fill="clear" (click)="editUser(usuario.idUsuario)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
         </ion-card-header>
         <ion-card-content>
           <p>
@@ -24,5 +29,13 @@
         </ion-card-content>
       </ion-card>
     </div>
-  </ng-content>
+  </div>
+
+  <div *ngIf="!usuarios || usuarios.length === 0">
+    <ion-card>
+      <ion-card-header>
+        No hay usuarios registrados
+      </ion-card-header>
+    </ion-card>
+  </div>
 </ion-content>

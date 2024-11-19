@@ -115,6 +115,28 @@ paths:
       - ApiKeyAuth: []
       x-swagger-router-controller: Usuarios
   /usuarios/{idUsuario}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener un usuario por ID
+      description: Obtener un usuario por su ID (solo admin).
+      operationId: usuariosIdUsuarioGET
+      parameters:
+        - name: idUsuario
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Usuario obtenido correctamente.
+        "400":
+          description: No se ha encontrado el usuario
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Usuarios
     put:
       tags:
       - Usuarios

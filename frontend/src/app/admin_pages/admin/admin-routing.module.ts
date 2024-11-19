@@ -27,6 +27,14 @@ const routes: Routes = [
         loadChildren: () => import('../gestion-usuarios/gestion-usuarios.module').then(m => m.GestionUsuariosPageModule)
       },
       {
+        path: 'crear-usuario',
+        loadChildren: () => import('../crear-usuario/crear-usuario.module').then(m => m.CrearUsuarioPageModule)
+      },
+      {
+        path: 'editar-usuario/:id',
+        loadChildren: () => import('../editar-usuario/editar-usuario.module').then( m => m.EditarUsuarioPageModule)
+      },
+      {
         path: '',
         redirectTo: '/admin/inicio-admin',
         pathMatch: 'full'
