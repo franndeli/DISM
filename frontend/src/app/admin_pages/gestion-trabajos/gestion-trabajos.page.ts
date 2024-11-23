@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TrabajosService } from 'src/service/api/trabajos.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-gestion-trabajos',
   templateUrl: './gestion-trabajos.page.html',
@@ -8,7 +9,7 @@ import { TrabajosService } from 'src/service/api/trabajos.service';
 export class GestionTrabajosPage implements OnInit {
   trabajos: any[] = [];
 
-  constructor(private trabajosService: TrabajosService) { }
+  constructor(private trabajosService: TrabajosService, private route: Router) { }
 
   ngOnInit() {
     const token = localStorage.getItem('token')
@@ -21,6 +22,14 @@ export class GestionTrabajosPage implements OnInit {
         }
       )
     }
+  }
+
+  crearTrabajo() {
+    this.route.navigate(['/admin/crear-trabajo']);
+  }
+
+  editarTrabajo(id: number){
+    this.route.navigate(['/admin/editar-trabajo', id]);
   }
 
 }

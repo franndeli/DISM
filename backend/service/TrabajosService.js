@@ -72,13 +72,15 @@ exports.trabajosGET = function(req) {
   });
 }
 
-exports.trabajosIdTrabajoGET = function(req, id) {
+exports.trabajosIdTrabajoGET = function(req) {
   return new Promise(async(resolve, reject) => {
     try {
       const tokenVerification = await verifyToken(req);
 
       const query = 'SELECT * FROM trabajos WHERE idTrabajo = ?'
-      db.query(query, id, function (error, results){
+      console.log(req.openapi.pathParams.idTrabajo);
+
+      db.query(query, req.openapi.pathParams.idTrabajo, function (error, results){
         if (results<=0){
           reject({
             message:"No existe ningún trabajo con ID " + id, error: error

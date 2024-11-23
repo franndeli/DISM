@@ -12,6 +12,10 @@ export class GestionUsuariosPage implements OnInit {
 
   constructor(private usuariosService: UsuariosService, private router: Router) { }
 
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+  
   ngOnInit() {
     const token = localStorage.getItem('token')
 

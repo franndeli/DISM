@@ -24,7 +24,7 @@ module.exports.trabajosGET = function trabajosGET (req, res, next) {
 };
 
 module.exports.trabajosIdTrabajoGET = function trabajosIdTrabajoGET (req, res, next, body, idTrabajo) {
-  Trabajos.trabajosIdTrabajoGET(req, idTrabajo)
+  Trabajos.trabajosIdTrabajoGET(req, res, idTrabajo)
     .then(function (response) {
       utils.writeJson(res, response);
     })

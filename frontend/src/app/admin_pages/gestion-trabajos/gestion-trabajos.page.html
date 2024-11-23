@@ -11,9 +11,25 @@
     </ion-toolbar>
   </ion-header>
 
-  <ng-content *ngIf = "trabajos.length > 0;">
+  <ion-button expand="full" (click)="crearTrabajo()">
+    Crear Trabajo
+  </ion-button>
+
+  <ng-content *ngIf="trabajos.length > 0;">
     <div *ngFor="let trabajo of trabajos">
-      <p>{{trabajo.Nombre}}</p>
+      <ion-card>
+        <ion-card-header>
+          ID de Trabajo: {{trabajo.idTrabajo}}
+          <ion-button fill="clear" (click)="editarTrabajo(trabajo.idTrabajo)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            <strong>Nombre</strong> {{trabajo.Nombre}}
+          </p>
+        </ion-card-content>
+      </ion-card>
     </div>
   </ng-content>
 

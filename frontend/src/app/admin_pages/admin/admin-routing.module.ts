@@ -35,6 +35,14 @@ const routes: Routes = [
         loadChildren: () => import('../editar-usuario/editar-usuario.module').then( m => m.EditarUsuarioPageModule)
       },
       {
+        path: 'editar-trabajo/:id',
+        loadChildren: () => import('../editar-trabajo/editar-trabajo.module').then( m => m.EditarTrabajoPageModule)
+      },
+      {
+        path: 'crear-trabajo',
+        loadChildren: () => import('../crear-trabajo/crear-trabajo.module').then( m => m.CrearTrabajoPageModule)
+      },
+      {
         path: '',
         redirectTo: '/admin/inicio-admin',
         pathMatch: 'full'

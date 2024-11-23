@@ -14,4 +14,33 @@ export class TrabajosService {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     return this.http.get(`${this.apiUrl}/trabajos`, {headers} );
   }
+
+  getTrabajoById(token: string, id: number): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+
+    console.log(id);
+    return this.http.get(`${this.apiUrl}/trabajos/${id}`, { headers });
+  }
+
+  updateTrabajo(token: string, id: number, nombre: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+
+    const body = {
+      idTrabajo: id,
+      nombre: nombre,
+    }
+
+    return this.http.put(`${this.apiUrl}/trabajos/${id}`, body, {headers});
+  }
+
+  createTrabajo(token:string, id?:number, nombre?: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+
+    const body = {
+      idTrabajo: id,
+      nombre: nombre,
+    }
+
+    return this.http.post(`${this.apiUrl}/trabajos`, body, {headers});
+  }
 }

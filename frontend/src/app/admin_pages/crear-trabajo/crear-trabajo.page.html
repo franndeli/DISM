@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>crear-trabajo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">crear-trabajo</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="stacked">ID</ion-label>
+      <ion-input type="number" [(ngModel)]="trabajoID" name="id" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Nombre</ion-label>
+      <ion-input type="text" [(ngModel)]="trabajoNombre" name="nombre" required></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit">Crear Trabajo</ion-button>
+  </form>
+</ion-content>
