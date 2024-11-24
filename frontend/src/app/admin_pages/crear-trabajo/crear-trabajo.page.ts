@@ -19,17 +19,17 @@ export class CrearTrabajoPage implements OnInit {
   onSubmit() {
     const token = localStorage.getItem('token');
 
-    console.log(this.trabajoID);
+    // console.log(this.trabajoID);
 
     if(token){
-      console.log(this.trabajoID);
+      // console.log(this.trabajoID);
       this.trabajoService.createTrabajo(token, this.trabajoID, this.trabajoNombre).subscribe(
       async(response) => {
-        console.log(response);
+        // console.log(response);
         if(response.message === "Trabajo creado con éxito"){
           this.goBack();
         } else {
-          console.log('Error al crear el trabajo');
+          // console.log('Error al crear el trabajo');
         }
       });
     }

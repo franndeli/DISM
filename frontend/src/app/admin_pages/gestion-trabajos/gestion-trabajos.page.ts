@@ -11,6 +11,10 @@ export class GestionTrabajosPage implements OnInit {
 
   constructor(private trabajosService: TrabajosService, private route: Router) { }
 
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+  
   ngOnInit() {
     const token = localStorage.getItem('token')
 

@@ -13,6 +13,16 @@ module.exports.fichajesGET = function fichajesGET (req, res, next, idUsuario, fe
     });
 };
 
+module.exports.fichajesIdFichajeGET = function fichajesIdFichajeGET (req, res, next, idUsuario, fechaInicio) {
+  Fichajes.fichajesIdFichajeGET(req, idUsuario, fechaInicio)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.fichajesIdFichajePUT = function fichajesIdFichajePUT (req, res, next, body, idFichaje) {
   Fichajes.fichajesIdFichajePUT(req, body, idFichaje)
     .then(function (response) {

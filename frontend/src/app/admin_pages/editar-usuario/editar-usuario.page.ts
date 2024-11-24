@@ -23,7 +23,7 @@ export class EditarUsuarioPage implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log(id);
+    // console.log(id);
     if (id) {
       this.idUsuario = +id;
     } else {
@@ -39,7 +39,7 @@ export class EditarUsuarioPage implements OnInit {
     if (token) {
       this.usuariosService.getUsuarioById(token, this.idUsuario).subscribe(
         async (response) => {
-          console.log(response);
+          // console.log(response);
           const user = response.body;
           this.nombre = user.Nombre;
           this.usuario = user.Usuario;
@@ -54,7 +54,7 @@ export class EditarUsuarioPage implements OnInit {
     if (token) {
       this.usuariosService.updateUsuario(token, this.idUsuario, this.nombre, this.usuario, this.clave).subscribe(
         async (response) => {
-          console.log(response);
+          // console.log(response);
           if (response.message === "Usuario modificado con éxito") {
             this.presentToast('Usuario actualizado con éxito');
             this.goBack();

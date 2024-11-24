@@ -11,6 +11,80 @@
     </ion-toolbar>
   </ion-header>
 
+  <div class="search-container">
+    <!-- Menú desplegable para buscar usuarios -->
+    <ion-item (click)="toggleDesplegable()">
+      <ion-label>Seleccionar Usuario</ion-label>
+      <ion-icon [name]="desplegableAbierto ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+    </ion-item>
+
+    <!-- Contenedor desplegable -->
+    <div *ngIf="desplegableAbierto" class="desplegable-container">
+      <ion-searchbar
+        [(ngModel)]="filtroUsuario"
+        (ionInput)="filtrarUsuarios()"
+        placeholder="Buscar usuario por nombre">
+      </ion-searchbar>
+      <ion-list>
+        <ion-item *ngFor="let usuario of usuariosFiltrados" (click)="actualizarFiltros('usuario', usuario)">
+          <ion-label>{{ usuario.Nombre }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Mostrar usuario seleccionado -->
+    <ion-item *ngIf="usuarioSeleccionado">
+      <ion-label>Usuario Seleccionado:</ion-label>
+      <ion-text>{{ usuarioSeleccionado.Nombre }}</ion-text>
+      <ion-button fill="clear" slot="end" (click)="actualizarFiltros('usuario', null)">
+        <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+  
+    <!-- Buscador de fecha -->
+    <!-- <div class="fecha-container">
+      <ion-item class="small-datetime">
+        <ion-label position="stacked">Fecha Inicio</ion-label>
+        <ion-datetime
+          display-format="DD/MM/YYYY" 
+          placeholder="Inicio"
+          [(ngModel)]="fechaInicio"
+          (ionChange)="onFechaChange()">
+        </ion-datetime>
+      </ion-item>
+    
+      <ion-item class="small-datetime">
+        <ion-label position="stacked">Fecha Fin</ion-label>
+        <ion-datetime
+          display-format="DD/MM/YYYY" 
+          placeholder="Fin"
+          [(ngModel)]="fechaFin"
+          (ionChange)="onFechaChange()">
+        </ion-datetime>
+      </ion-item>
+    </div> -->
+
+    <ion-list>
+      <ion-item id="open-modal2">
+        <ion-label>Modal - Date selection</ion-label>
+        <ion-note slot="end">{{fechaInicio | date}}</ion-note>
+      </ion-item>
+      <ion-modal trigger="open-modal2" [cssClass]="'bottom-end'">
+        <ng-template>
+          <ion-datetime
+            presentation="date"
+            [(ngModel)]="fechaInicio"
+            size="cover"
+            [showDefaultButtons]="true"
+            (ionChange)="actualizarFiltros(fechaInicio, $event.detail.value)"
+          ></ion-datetime>
+        </ng-template> 
+      </ion-modal>
+    </ion-list>
+  </div>
+  
+
   <ng-content *ngIf="fichajes.length > 0; else noFichajes">
     <div *ngFor="let fichaje of fichajes">
       <ion-card>
@@ -19,21 +93,23 @@
         </ion-card-header>
         <ion-card-content>
           <p><strong>Fecha de Entrada:</strong> {{ fichaje.FechaHoraEntrada }}</p>
-          <p><strong>Horas Trabajadas:</strong> {{ fichaje.horasTrabajadas }}</p>
+          <p><strong>Horas Trabajadas:</strong> {{ fichaje.HorasTrabajadas }}</p>
           <p><strong>Trabajo:</strong> {{ fichaje.trabajoNombre }}</p>
           <p><strong>Dirección:</strong> {{ fichaje.direccion }}</p>
-
-          <div class="divider"></div>
 
           <div class="button-container">
             <ion-button 
               fill="clear" 
               color="primary" 
-              (click)="editarFichaje(fichaje)">
-              <ion-icon name="create-outline" slot="start"></ion-icon>
-              Editar
+              (click)="toggleMapa(fichaje)">
+              <ion-icon name="eye-outline" slot="start"></ion-icon>
+              {{ fichaje.mostrarMapa ? 'Ocultar Mapa' : 'Mostrar Mapa' }}
             </ion-button>
           </div>
+
+          <div *ngIf="fichaje.mostrarMapa" class="map-container">
+            <div id="mapId-{{ fichaje.idFichaje }}" style="width: 100%; height: 300px"></div>
+          </div>          
         </ion-card-content>
       </ion-card>
     </div>

@@ -18,7 +18,7 @@ export class TrabajosService {
   getTrabajoById(token: string, id: number): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
 
-    console.log(id);
+    // console.log(id);
     return this.http.get(`${this.apiUrl}/trabajos/${id}`, { headers });
   }
 

@@ -89,4 +89,25 @@ export class FichajesService {
 
     return this.http.post(`${this.apiUrl}/fichajes`, body, { headers } )
   }
+
+  getFichajeBuscador(token: string, idUsuario?: number, fechaInicio?: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+    
+    let url = `${this.apiUrl}/fichajes/buscador`;
+
+    if(idUsuario && fechaInicio){
+      url += `?idUsuario=${encodeURIComponent(idUsuario)}`;
+      url += `&fechaInicio=${encodeURIComponent(fechaInicio)}`;
+    } else if (idUsuario){
+      url += `?idUsuario=${encodeURIComponent(idUsuario)}`;
+    } else if (fechaInicio){ 
+      url += `?fechaInicio=${encodeURIComponent(fechaInicio)}`;
+    }
+
+    console.log(url);
+
+    return this.http.get(url, { headers });
+
+  }
+  
 }

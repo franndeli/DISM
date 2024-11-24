@@ -32,7 +32,7 @@ exports.trabajosDELETE = function(req, idTrabajo) {
             message: "Trabajo no encontrado con ID " + idTrabajo
           })
         }
-        // // console.log(results);
+        // console.log(results);
       })
     } catch (error) {
       reject(error);
@@ -116,7 +116,7 @@ exports.trabajosIdTrabajoPUT = function(req, body, idTrabajo) {
 
       const secure = 'SELECT * FROM trabajos WHERE idTrabajo = ?';
       db.query(secure, idTrabajo, function(error,results){
-        // // console.log(results);
+        //console.log(results);
         if(results.length == 0){
           reject({
             message: "No existe ningún trabajo con ID " + idTrabajo, error: error
@@ -131,7 +131,7 @@ exports.trabajosIdTrabajoPUT = function(req, body, idTrabajo) {
             } else {
               const query = 'UPDATE trabajos SET idTrabajo = ?, Nombre = ? WHERE idTrabajo = ?'
               db.query(query, [body.idTrabajo, body.nombre, idTrabajo], function(error, results){
-                // // console.log(results);
+                // console.log(results);
                 // console.log(error);
                 if(results.affectedRows > 0){
                   resolve({

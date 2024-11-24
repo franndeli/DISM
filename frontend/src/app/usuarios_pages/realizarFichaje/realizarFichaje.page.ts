@@ -40,7 +40,7 @@ export class realizarFichaje implements OnInit {
     if (token) {
       this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, 12, true).subscribe(
         async (response) => {
-          console.log('Fichajes obtenidos:', response);
+          // console.log('Fichajes obtenidos:', response);
           if(response.body != undefined) {
             this.fichajesRaw = response.body;
             this.fichajes = response.body.map((fichaje: any) => {
@@ -76,7 +76,7 @@ export class realizarFichaje implements OnInit {
             );
             this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, 3490534578943870, true).subscribe(
               (response) => {
-                console.log('Fichajes fuera de las 12 horas:', response);
+                // console.log('Fichajes fuera de las 12 horas:', response);
               }
             )
           }

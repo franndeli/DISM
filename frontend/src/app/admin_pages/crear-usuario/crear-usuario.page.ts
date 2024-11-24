@@ -31,7 +31,7 @@ export class CrearUsuarioPage implements OnInit {
     if(token){
       this.usuarioService.postUsuario(token, this.id ?? 0, this.nombre, this.usuario, this.clave ).subscribe(
       async(response) => {
-        console.log(response);
+        // console.log(response);
         if(response.message === "Usuario creado con éxito"){
           this.goBack();
         } else {

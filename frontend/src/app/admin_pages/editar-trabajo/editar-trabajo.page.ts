@@ -20,7 +20,7 @@ export class EditarTrabajoPage implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log(id);
+    // console.log(id);
     if (id) {
       this.trabajoID = +id;
     } else {
@@ -34,10 +34,10 @@ export class EditarTrabajoPage implements OnInit {
   loadTrabajoData() {
     const token = localStorage.getItem('token');
     if (token) {
-      console.log(this.trabajoID);
+      // console.log(this.trabajoID);
       this.trabajoService.getTrabajoById(token, this.trabajoID).subscribe(
         async (response) => {
-          console.log(response);
+          // console.log(response);
           const user = response.body;
           this.nombre = user[0].Nombre;
         }
@@ -50,7 +50,7 @@ export class EditarTrabajoPage implements OnInit {
     if (token) {
       this.trabajoService.updateTrabajo(token, this.trabajoID, this.nombre).subscribe(
         async (response) => {
-          console.log(response);
+          // console.log(response);
           if (response.message === "Trabajo modificado con éxito") {
             this.presentToast('Trabajo actualizado con éxito');
             this.goBack();

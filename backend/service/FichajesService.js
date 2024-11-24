@@ -15,6 +15,9 @@ const { verifyToken } = require('../auth/authController');
 exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
   return new Promise(async(resolve, reject) => {
     try {
+
+      console.log(req.query);
+
       const tokenVerification = await verifyToken(req);
 
       let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
@@ -41,6 +44,14 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
 
       if (req.query.fechaFinIsNull === true) {
         query += ' AND FechaHoraSalida IS NULL';
+      }
+
+      if(req.query.fechaInicio === true){
+        query += ' AND FechaHoraEntrada BETWEEN ? AND ?';
+      }
+
+      if(req.query.fechaFin === true){
+        query += ' AND FechaHoraSalida BETWEEN ? AND ?';
       }
 
       db.query(query, queryParams, async function(error, results) {
@@ -217,6 +228,62 @@ exports.fichajesPOST = function(req, body) {
               tokenInfo: tokenVerification
             });
           }
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+exports.fichajesIdFichajeGET = function(req, idUsuario, fechaInicio) {
+  return new Promise(async (resolve, reject) => {
+
+    const { idUsuario, fechaInicio } = req.query; // Extraer los parámetros de req.query
+
+    console.log('idUsuario:', idUsuario);
+    console.log('fechaInicio:', fechaInicio);
+
+    try {
+      const tokenVerification = await verifyToken(req);
+
+      let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
+      const queryParams = [];
+
+      if (idUsuario) {
+        query += ' AND idUsuario = ?';
+        queryParams.push(idUsuario);
+      }
+
+      if (fechaInicio) {
+        const startOfDay = new Date(fechaInicio);
+        startOfDay.setHours(0, 0, 0, 0);
+      
+        const endOfDay = new Date(fechaInicio);
+        endOfDay.setHours(23, 59, 59, 999);
+      
+        query += ' AND FechaHoraEntrada BETWEEN ? AND ?';
+        queryParams.push(startOfDay.toISOString(), endOfDay.toISOString());
+      }
+      
+
+      db.query(query, queryParams, function(error, results) {
+        if (error) {
+          reject({
+            message: "Error al obtener el fichaje",
+            error: error
+          });
+        } else if (results.length > 0) {
+          resolve({
+            message: "Fichaje obtenido con éxito",
+            body: results[0],
+            tokenInfo: tokenVerification
+          });
+        } else {
+          reject({
+            message: "Fichaje no encontrado con usuario ID " + idUsuario,
+            error: error
+          });
         }
       });
     } catch (error) {

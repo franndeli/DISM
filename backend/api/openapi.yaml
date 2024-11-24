@@ -375,6 +375,43 @@ paths:
       security:
       - ApiKeyAuth: []
       x-swagger-router-controller: Fichajes
+  /fichajes/buscador:
+    get:
+      tags:
+      - Fichajes
+      summary: Obtener todos los fichajes
+      description: Retorna una lista de fichajes filtrados por fechas y usuario (solo
+        admin).
+      operationId: fichajesIdFichajeGET
+      parameters:
+      - name: idUsuario
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: fechaInicio
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          description: Lista de fichajes obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fichaje'
+                x-content-type: application/json
+      security:
+      - ApiKeyAuth: []
+      x-swagger-router-controller: Fichajes
 components:
   schemas:
     Usuario:

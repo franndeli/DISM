@@ -35,7 +35,7 @@ export class consultarFichaje implements OnInit {
       this.fichajesService.getFichajesUsuario(token, idUsuario!, this.fechaActual, hora).subscribe(
         async (response) => {
           if(response.body != undefined) {
-            console.log('Fichajes obtenidos:', response);
+            // console.log('Fichajes obtenidos:', response);
             this.fichajes = response.body.map((fichaje: any) => ({
               ...fichaje,
               FechaHoraEntrada: this.convertirFechaFormatoLegible(fichaje.FechaHoraEntrada),

@@ -22,7 +22,7 @@ export class GestionUsuariosPage implements OnInit {
     if(token){
       this.usuariosService.getUsuarios(token, 'Usuario').subscribe(
         async(response) => {
-          console.log(response.body);
+          // console.log(response.body);
           this.usuarios = response.body;
         }
       )
