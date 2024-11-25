@@ -43,4 +43,16 @@ export class TrabajosService {
 
     return this.http.post(`${this.apiUrl}/trabajos`, body, {headers});
   }
+
+  deleteTrabajos(token: string, id: number): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+    
+    let url = `${this.apiUrl}/trabajos`;
+
+    if(id){
+      url += `?idTrabajo=${encodeURIComponent(id)}`;
+    }
+
+    return this.http.delete(url, { headers });
+  }
 }

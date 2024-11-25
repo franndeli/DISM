@@ -59,4 +59,16 @@ export class UsuariosService {
     }
     return this.http.put(`${this.apiUrl}/usuarios/${id}`, body, { headers });
   }
+
+  deleteUsuario(token: string, id: number): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `${token}`);
+    
+    let url = `${this.apiUrl}/usuarios`;
+
+    if(id){
+      url += `?idUsuario=${encodeURIComponent(id)}`;
+    }
+
+    return this.http.delete(url, { headers });
+  }
 }

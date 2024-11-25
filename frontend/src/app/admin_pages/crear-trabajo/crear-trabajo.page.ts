@@ -12,8 +12,14 @@ export class CrearTrabajoPage implements OnInit {
   trabajoID?: number;
 
   constructor(private route: Router, private trabajoService: TrabajosService) { }
-
+  
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+  
   ngOnInit() {
+    this.trabajoNombre = '';
+    this.trabajoID = undefined;
   }
 
   onSubmit() {
