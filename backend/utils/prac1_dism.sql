@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-10-2024 a las 10:17:26
+-- Tiempo de generación: 25-11-2024 a las 21:55:46
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -29,8 +29,15 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `apikey` (
   `idKey` int(11) NOT NULL,
-  `NombreKey` varchar(50) NOT NULL
+  `NombreKey` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `apikey`
+--
+
+INSERT INTO `apikey` (`idKey`, `NombreKey`) VALUES
+(1, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007');
 
 -- --------------------------------------------------------
 
@@ -41,8 +48,8 @@ CREATE TABLE `apikey` (
 CREATE TABLE `fichajes` (
   `idFichaje` int(11) NOT NULL,
   `FechaHoraEntrada` datetime NOT NULL,
-  `FechaHoraSalida` datetime NOT NULL,
-  `HorasTrabajadas` int(11) NOT NULL,
+  `FechaHoraSalida` datetime DEFAULT NULL,
+  `HorasTrabajadas` int(11) DEFAULT NULL,
   `idTrabajo` int(11) NOT NULL,
   `idUsuario` int(11) NOT NULL,
   `GeolocalizacionLatitud` float NOT NULL,
@@ -54,10 +61,8 @@ CREATE TABLE `fichajes` (
 --
 
 INSERT INTO `fichajes` (`idFichaje`, `FechaHoraEntrada`, `FechaHoraSalida`, `HorasTrabajadas`, `idTrabajo`, `idUsuario`, `GeolocalizacionLatitud`, `GeolocalizacionLongitud`) VALUES
-(1, '2024-10-21 08:00:00', '2024-10-21 17:00:00', 100, 1, 1, 40.4168, -3.70379),
-(2, '2024-10-25 17:41:02', '2024-10-25 17:41:02', 54, 3, 1, 213124, 65464),
-(3, '2024-10-25 17:41:37', '2024-10-25 17:41:37', 39, 2, 2, 213124, 54325300),
-(4, '2024-10-21 08:00:00', '2024-10-21 17:00:00', 100, 1, 1, 40.4168, -3.70379);
+(39, '2024-11-25 16:38:00', '2024-11-25 16:38:54', 43, 1, 9, -0.517734, 38.391),
+(40, '2024-11-27 16:38:00', '2024-11-28 17:39:13', 12, 1, 9, 38.391, -0.517734);
 
 -- --------------------------------------------------------
 
@@ -75,10 +80,7 @@ CREATE TABLE `trabajos` (
 --
 
 INSERT INTO `trabajos` (`idTrabajo`, `Nombre`) VALUES
-(1, 'Desarrollo Web'),
-(2, 'Limpieza baños'),
-(3, 'Organizar reuniones'),
-(4, 'Mantenimiento general');
+(1, 'Desarrollo Web');
 
 -- --------------------------------------------------------
 
@@ -99,8 +101,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idUsuario`, `Nombre`, `Usuario`, `Clave`, `Tipo`) VALUES
-(1, 'Francisco', 'frandeli_01', '1234', 'Usuario'),
-(2, 'Celia', 'celia_02', '1234', 'Usuario');
+(2, 'Celia', 'celia_02', '1234', 'Administrador'),
+(6, 'Angel Manuel Freeman', 'angel_01', '1234', 'Usuario'),
+(9, 'Pablo', 'pablo_02', '1234', 'Usuario');
 
 --
 -- Índices para tablas volcadas
@@ -140,13 +143,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `apikey`
 --
 ALTER TABLE `apikey`
-  MODIFY `idKey` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idKey` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `fichajes`
 --
 ALTER TABLE `fichajes`
-  MODIFY `idFichaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idFichaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Restricciones para tablas volcadas

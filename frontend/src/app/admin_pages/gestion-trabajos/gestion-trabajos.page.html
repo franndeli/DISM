@@ -1,39 +1,46 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>gestionTrabajos</ion-title>
+    <ion-title>Gestión de Trabajos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Gestión de trabajos</ion-title>
+      <ion-title size="large">Gestión de Trabajos</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-button expand="full" (click)="crearTrabajo()">
-    Crear Trabajo
-  </ion-button>
+  <ion-button class="cool-button" expand="block" (click)="crearTrabajo()">Crear Nuevo Trabajo</ion-button>
 
-  <ng-content *ngIf="trabajos.length > 0;">
+  <div *ngIf="trabajos && trabajos.length > 0">
     <div *ngFor="let trabajo of trabajos">
-      <ion-card>
+      <ion-card class="custom-card">
         <ion-card-header>
-          ID de Trabajo: {{trabajo.idTrabajo}}
-          <ion-button fill="clear" (click)="editarTrabajo(trabajo.idTrabajo)">
-            <ion-icon name="create-outline"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" (click)="deleteTrabajo(trabajo.idTrabajo)">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
+          <ion-card-title>{{trabajo.Nombre}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <p>
-            <strong>Nombre</strong> {{trabajo.Nombre}}
+            <strong>ID de Trabajo: </strong> {{trabajo.idTrabajo}}
           </p>
+          <ion-buttons>
+            <ion-button fill="clear" (click)="editarTrabajo(trabajo.idTrabajo)">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="deleteTrabajo(trabajo.idTrabajo)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-card-content>
       </ion-card>
     </div>
-  </ng-content>
-
+  </div>
+  
+  <div *ngIf="!trabajos || trabajos.length === 0">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>No hay trabajos registrados</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
 </ion-content>

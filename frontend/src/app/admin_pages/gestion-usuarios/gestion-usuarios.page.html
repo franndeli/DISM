@@ -1,43 +1,45 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>gestionUsuarios</ion-title>
+    <ion-title>Gestión de Usuarios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Gestión de usuarios</ion-title>
+      <ion-title size="large">Gestión de Usuarios</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-button expand="full" (click)="createUser()">Crear Nuevo Usuario</ion-button>
+  <ion-button expand="block" class="cool-button" (click)="createUser()">Crear Nuevo Usuario</ion-button>
 
   <div *ngIf="usuarios && usuarios.length > 0">
     <div *ngFor="let usuario of usuarios">
-      <ion-card>
+      <ion-card class="custom-card">
         <ion-card-header>
-          ID de Usuario: {{usuario.idUsuario}}
-          <ion-button fill="clear" (click)="editUser(usuario.idUsuario)">
-            <ion-icon name="create-outline"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" (click)="deleteUser(usuario.idUsuario)">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
+          <ion-card-title>{{usuario.Nombre}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <p>
-            <strong>Nombre</strong> {{usuario.Nombre}}
+            <strong>ID de Usuario: </strong> {{usuario.idUsuario}} 
           </p>
+          <ion-buttons>
+            <ion-button fill="clear" (click)="editUser(usuario.idUsuario)">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="deleteUser(usuario.idUsuario)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-card-content>
       </ion-card>
     </div>
   </div>
-
+  
   <div *ngIf="!usuarios || usuarios.length === 0">
     <ion-card>
       <ion-card-header>
-        No hay usuarios registrados
+        <ion-card-title>No hay usuarios registrados</ion-card-title>
       </ion-card-header>
     </ion-card>
   </div>

@@ -70,7 +70,7 @@ export class realizarFichaje implements OnInit {
           } else {
             this.trabajosService.getTrabajos(token).subscribe(
               (response) => {
-                // console.log("Trabajos obtenidos", response);
+                console.log("Trabajos obtenidos", response);
                 this.trabajos = response.body;
               }
             );

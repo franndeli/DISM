@@ -5,11 +5,40 @@ const jwt = require('jsonwebtoken');
 
 const db = require('../utils/db');
 
-const login = (req, res) => {
-    const { usuario, clave } = req.body;
+async function getApiKey(req, res) {
+  return new Promise((resolve, reject) => {
+    try {
+      const query = 'SELECT * FROM apikey WHERE idKey = 1';
 
-    // console.log(req.body);
-  
+      db.query(query, (err, results) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error del servidor' });
+        }
+
+        if (results.length === 0) {
+          return res.status(404).json({ message: 'API Key no encontrada' });
+        }
+
+        const apiKey = results[0].NombreKey;
+
+        console.log(apiKey)
+
+        resolve(apiKey);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+const login = async (req, res) => {
+  const { usuario, clave } = req.body;
+
+  try {
+    const apiKey = await getApiKey(req, res);
+    
+    console.log(apiKey);
+
     // Verificar si el usuario existe en la base de datos
     const query = 'SELECT * FROM usuarios WHERE Usuario = ?';
 
@@ -17,25 +46,26 @@ const login = (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Error del servidor' });
       }
-  
+
       if (results.length === 0) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
-  
+
       const user = results[0];
-  
+
       // Verificar la contraseña
       const passwordIsValid = clave == user.Clave;
 
       if (!passwordIsValid) {
         return res.status(401).json({ message: 'Contraseña incorrecta' });
       }
-  
+
+      console.log(apiKey);
       // Crear el token JWT
-      const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', {
+      const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, apiKey, {
         expiresIn: 86400 // 24 horas
       });
-  
+
       if (token) {
         // Enviar el token y los datos del usuario en la respuesta
         res.status(200).json({
@@ -46,10 +76,14 @@ const login = (req, res) => {
           token: token
         });
       } else {
-        res.status(400).json({ message: 'Ha ocurrido un problema con el token' })
+        res.status(400).json({ message: 'Ha ocurrido un problema con el token' });
       }
     });
-  };
+  } catch (error) {
+    console.error('Error fetching API key:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
 
   // Middleware para verificar el token
   const verifyToken = (req) => {
@@ -60,7 +94,9 @@ const login = (req, res) => {
         console.error('Token no proporcionado');
         return reject({ message: 'No se proporcionó un token' });
       }
-  
+      
+      console.log(token);
+
       // Verifica el token sin prefijo
       jwt.verify(token, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', (err, decoded) => {
         if (err) {
@@ -78,5 +114,5 @@ const login = (req, res) => {
   };
   
   
-  module.exports = { login, verifyToken };
+  module.exports = { login, verifyToken, getApiKey };
 
