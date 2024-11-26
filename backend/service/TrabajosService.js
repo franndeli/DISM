@@ -78,7 +78,7 @@ exports.trabajosIdTrabajoGET = function(req) {
       const tokenVerification = await verifyToken(req);
 
       const query = 'SELECT * FROM trabajos WHERE idTrabajo = ?'
-      console.log(req.openapi.pathParams.idTrabajo);
+      //console.log(req.openapi.pathParams.idTrabajo);
 
       db.query(query, req.openapi.pathParams.idTrabajo, function (error, results){
         if (results<=0){

@@ -104,7 +104,7 @@ export class FichajesService {
       url += `?fechaInicio=${encodeURIComponent(fechaInicio)}`;
     }
 
-    console.log(url);
+    // console.log(url);
 
     return this.http.get(url, { headers });
 

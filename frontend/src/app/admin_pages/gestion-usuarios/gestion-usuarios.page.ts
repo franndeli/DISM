@@ -52,7 +52,7 @@ export class GestionUsuariosPage implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           handler: () => {
-            console.log('Eliminación cancelada');
+            // console.log('Eliminación cancelada');
           }
         },
         {
@@ -62,9 +62,9 @@ export class GestionUsuariosPage implements OnInit {
             if (token) {
               this.usuariosService.deleteUsuario(token, id).subscribe(
                 async(response) => {
-                  console.log(response);
+                  // console.log(response);
                   this.usuarios = this.usuarios.filter(usuario => usuario.idUsuario !== id);
-                  this.presentToast('Usuario eliminado con éxito');
+                  this.presentToastBien('Usuario eliminado con éxito');
                 },
                 async(error) => {
                   console.error(error);
@@ -84,7 +84,17 @@ export class GestionUsuariosPage implements OnInit {
     const toast = await this.toastcontroller.create({
       message: message,
       duration: 2000,
-      position: 'bottom'
+      position: 'top'
+    });
+    toast.present();
+  }
+
+  async presentToastBien(message: string) {
+    const toast = await this.toastcontroller.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: 'success'
     });
     toast.present();
   }

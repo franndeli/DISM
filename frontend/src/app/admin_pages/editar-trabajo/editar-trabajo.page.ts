@@ -25,7 +25,7 @@ export class EditarTrabajoPage implements OnInit {
       this.trabajoID = +id;
     } else {
       // Handle the case when id is null
-      this.presentToast('Error: ID de usuario no encontrado');
+      this.presentToastMal('Error: ID de usuario no encontrado');
       this.goBack();
     }
     this.loadTrabajoData();
@@ -52,10 +52,10 @@ export class EditarTrabajoPage implements OnInit {
         async (response) => {
           // console.log(response);
           if (response.message === "Trabajo modificado con éxito") {
-            this.presentToast('Trabajo actualizado con éxito');
+            this.presentToastBien('Trabajo actualizado con éxito');
             this.goBack();
           } else {
-            this.presentToast('Error al actualizar el trabajo');
+            this.presentToastMal('Error al actualizar el trabajo');
           }
         }
       );
@@ -66,12 +66,22 @@ export class EditarTrabajoPage implements OnInit {
     this.router.navigate(['/admin/gestion-trabajos']);
   }
 
-  async presentToast(message: string) {
+  async presentToastMal(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000,
-      position: 'bottom',
+      position: 'top',
       color: 'danger'
+    });
+    toast.present();
+  }
+
+  async presentToastBien(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: 'success'
     });
     toast.present();
   }

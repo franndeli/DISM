@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FichajesService } from 'src/service/api/fichajes.service';
 import { UsuariosService } from 'src/service/api/usuarios.service';
 
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import * as Leaflet from 'leaflet';
 
 import { icon, Marker } from 'leaflet';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-gestion-fichajes',
@@ -28,7 +29,7 @@ export class GestionFichajesPage implements OnInit {
   constructor(private fichajesservice: FichajesService, 
     private http: HttpClient, 
     private router: Router,
-    private usuarioService: UsuariosService
+    private usuarioService: UsuariosService,
   ) { }
 
   ngOnInit() {
@@ -39,6 +40,7 @@ export class GestionFichajesPage implements OnInit {
       this.fichajesservice.getFichajesUsuario(token, '').subscribe(
         async (response) => {
           if (response.body != undefined) {
+            console.log(response.body)
             this.fichajes = response.body.map((fichaje: any) => {
               return {
                 ...fichaje,
@@ -76,39 +78,29 @@ export class GestionFichajesPage implements OnInit {
   }
 
   filtrarUsuarios() {
-    // Filtrar usuarios por el término de búsqueda
     const term = this.filtroUsuario.toLowerCase();
     this.usuariosFiltrados = this.usuarios.filter((usuario) =>
       usuario.Nombre.toLowerCase().includes(term)
     );
   }
 
-  aplicarFiltros() {
+  async aplicarFiltros() {
     // Verificar si hay filtros aplicados
     const tieneFiltros = this.usuarioSeleccionado || this.fechaInicio;
   
     if (tieneFiltros) {
-      console.log('Filtros aplicados. Ejecutando búsqueda...');
-      this.buscarFichajes(); // Llama al método para obtener fichajes filtrados
+      // console.log('Filtros aplicados. Ejecutando búsqueda...');
+      await this.buscarFichajes();
     } else {
-      console.log('Sin filtros aplicados. Obteniendo todos los fichajes...');
-      this.ngOnInit(); // Llama al método inicial para obtener todos los fichajes
+      // console.log('Sin filtros aplicados. Obteniendo todos los fichajes...');
+      this.ngOnInit(); 
     }
   }
-  
-
-  // seleccionarUsuario(usuario: any) {
-  //   console.log(`Usuario seleccionado: ${usuario.Nombre}`);
-  //   this.usuarioSeleccionado = usuario;
-  //   this.filtroUsuario = usuario.Nombre; 
-  //   this.desplegableAbierto = false;
-  //   console.log(this.desplegableAbierto);
-  // }
 
   borrarSeleccionUsuario() {
     this.usuarioSeleccionado = null;
     this.filtroUsuario = '';
-    console.log('Selección de usuario borrada');
+    // console.log('Selección de usuario borrada');
   }
   
 
@@ -126,7 +118,7 @@ export class GestionFichajesPage implements OnInit {
 
   async obtenerDireccion(lat: number, lon: number): Promise<string> {
     const urlNom = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='
-      + lon + '&lon=' + lat + '&addressdetails=1';
+      + lat + '&lon=' + lon + '&addressdetails=1';
 
     // console.log(urlNom);
 
@@ -153,7 +145,7 @@ export class GestionFichajesPage implements OnInit {
     }
   
     if (mapContainer.hasChildNodes()) {
-      console.log(`El mapa con ID ${mapId} ya está inicializado`);
+      // console.log(`El mapa con ID ${mapId} ya está inicializado`);
       return;
     }
   
@@ -173,12 +165,12 @@ export class GestionFichajesPage implements OnInit {
   
     Marker.prototype.options.icon = iconDefault;
   
-    const map = Leaflet.map(mapId).setView([long, lat], 8);
+    const map = Leaflet.map(mapId).setView([lat, long], 8);
     Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© Ionic Leaflet',
     }).addTo(map);
   
-    Leaflet.marker([long, lat]).addTo(map)
+    Leaflet.marker([lat, long]).addTo(map)
       .bindPopup('Fichaje realizado aquí')
       .openPopup();
   }
@@ -207,11 +199,11 @@ export class GestionFichajesPage implements OnInit {
   actualizarFiltros(tipo: string, valor: any) {
     if (tipo === 'usuario') {
       this.usuarioSeleccionado = valor;
-      console.log(`Usuario seleccionado: ${this.usuarioSeleccionado?.Nombre || 'Ninguno'}`);
+      // console.log(`Usuario seleccionado: ${this.usuarioSeleccionado?.Nombre || 'Ninguno'}`);
       this.desplegableAbierto = false;
     } else if (tipo === 'fechaInicio') {
       this.fechaInicio = valor;
-      console.log(`Fecha Inicio: ${this.fechaInicio}`);
+      // console.log(`Fecha Inicio: ${this.fechaInicio}`);
     }
   
     // Llamar a la lógica de aplicar filtros
@@ -219,34 +211,36 @@ export class GestionFichajesPage implements OnInit {
   }
   
 
-  buscarFichajes() {
-    console.log('Buscando fichajes con los siguientes filtros:');
-    console.log('Usuario:', this.usuarioSeleccionado?.Nombre || 'No seleccionado');
-    console.log('Fecha Inicio:', this.fechaInicio || 'No especificada');
+  async buscarFichajes() {
+    // console.log('Buscando fichajes con los siguientes filtros:');
+    // console.log('Usuario:', this.usuarioSeleccionado?.Nombre || 'No seleccionado');
+    // console.log('Fecha Inicio:', this.fechaInicio || 'No especificada');
   
     const fecha = this.fechaInicio ? new Date(this.fechaInicio).toISOString() : undefined;
     const usuarioId = this.usuarioSeleccionado?.idUsuario || undefined;
   
     this.fichajesservice.getFichajeBuscador(this.token, usuarioId, fecha).subscribe(async (response) => {
-      console.log('Datos de fichajes encontrados:', response.body);
-  
-      // Verifica si `response.body` es un array o un objeto único
+      // console.log('Datos de fichajes encontrados:', response.body);
+    
       if (Array.isArray(response.body)) {
-        this.fichajes = response.body.map((fichaje: any) => this.procesarFichaje(fichaje));
+        this.fichajes = await Promise.all(response.body.map((fichaje: any) => this.procesarFichaje(fichaje)));
       } else if (response.body && typeof response.body === 'object') {
-        this.fichajes = [this.procesarFichaje(response.body)];
+        // console.log(response.body);
+        this.fichajes = [await this.procesarFichaje(response.body)];
+        // console.log(this.fichajes[0]);
       } else {
         console.error('Formato inesperado de la respuesta:', response.body);
         this.fichajes = [];
       }
-  
-      console.log('Fichajes procesados:', this.fichajes);
+    
+      // console.log('Fichajes procesados:', this.fichajes);
     });
   }
   
   // Método para procesar cada fichaje y formatear los campos
-  procesarFichaje(fichaje: any): any {
-    return {
+  async procesarFichaje(fichaje: any): Promise<any> {
+    // console.log(fichaje);
+    let processedFichaje = {
       ...fichaje,
       FechaHoraEntrada: this.convertirFechaFormatoLegible(fichaje.FechaHoraEntrada),
       FechaHoraSalida: fichaje.FechaHoraSalida
@@ -255,6 +249,15 @@ export class GestionFichajesPage implements OnInit {
       direccion: '',
       mostrarMapa: false,
     };
+
+    if (processedFichaje.GeolocalizacionLatitud && processedFichaje.GeolocalizacionLongitud) {
+      processedFichaje.direccion = await this.obtenerDireccion(
+        processedFichaje.GeolocalizacionLatitud,
+        processedFichaje.GeolocalizacionLongitud
+      );
+    }
+
+    return processedFichaje;
   }
   
   

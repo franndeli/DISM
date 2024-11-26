@@ -39,7 +39,7 @@
 
       <ion-item class="ion-padding">
         <ion-label position="stacked">Trabajos</ion-label>
-        <ion-select [(ngModel)]="trabajoSeleccionado" name="trabajoSeleccionado" placeholder="Selecciona un trabajo" interface="popover">
+        <ion-select [(ngModel)]="trabajoSeleccionado" name="trabajoSeleccionado" placeholder="Selecciona un trabajo" interface="alert">
           <ion-select-option *ngFor="let trabajo of trabajos" [value]="trabajo.idTrabajo">
             {{ trabajo.Nombre }}
           </ion-select-option>

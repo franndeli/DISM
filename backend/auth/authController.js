@@ -21,7 +21,7 @@ async function getApiKey(req, res) {
 
         const apiKey = results[0].NombreKey;
 
-        console.log(apiKey)
+        // console.log(apiKey)
 
         resolve(apiKey);
       });
@@ -37,7 +37,7 @@ const login = async (req, res) => {
   try {
     const apiKey = await getApiKey(req, res);
     
-    console.log(apiKey);
+    // console.log(apiKey);
 
     // Verificar si el usuario existe en la base de datos
     const query = 'SELECT * FROM usuarios WHERE Usuario = ?';
@@ -60,7 +60,7 @@ const login = async (req, res) => {
         return res.status(401).json({ message: 'Contraseña incorrecta' });
       }
 
-      console.log(apiKey);
+      // console.log(apiKey);
       // Crear el token JWT
       const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, apiKey, {
         expiresIn: 86400 // 24 horas
@@ -95,7 +95,7 @@ const login = async (req, res) => {
         return reject({ message: 'No se proporcionó un token' });
       }
       
-      console.log(token);
+      // console.log(token);
 
       // Verifica el token sin prefijo
       jwt.verify(token, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', (err, decoded) => {

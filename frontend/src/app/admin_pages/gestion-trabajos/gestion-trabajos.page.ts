@@ -52,7 +52,7 @@ export class GestionTrabajosPage implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           handler: () => {
-            console.log('Eliminación cancelada');
+            // console.log('Eliminación cancelada');
           }
         },
         {
@@ -62,9 +62,9 @@ export class GestionTrabajosPage implements OnInit {
             if (token) {
               this.trabajosService.deleteTrabajos(token, id).subscribe(
                 async(response) => {
-                  console.log(response);
+                  // console.log(response);
                   this.trabajos = this.trabajos.filter(trabajo => trabajo.idTrabajo !== id);
-                  this.presentToast('Trabajo eliminado con éxito');
+                  this.presentToastBien('Trabajo eliminado con éxito');
                 },
                 async(error) => {
                   console.error(error);
@@ -80,11 +80,21 @@ export class GestionTrabajosPage implements OnInit {
     await alert.present();
   }
 
+  async presentToastBien(message: string) {
+    const toast = await this.toastcontroller.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: 'success'
+    });
+    toast.present();
+  }
+
   async presentToast(message: string) {
     const toast = await this.toastcontroller.create({
       message: message,
       duration: 2000,
-      position: 'bottom'
+      position: 'top'
     });
     toast.present();
   }

@@ -16,17 +16,27 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
   return new Promise(async(resolve, reject) => {
     try {
 
-      console.log(req.query);
+      // console.log(req.query);
 
       const tokenVerification = await verifyToken(req);
 
-      let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
+      let query = `
+        SELECT 
+          fichajes.*, 
+          trabajos.nombre AS trabajoNombre, 
+          usuarios.Nombre AS usuarioNombre 
+        FROM fichajes 
+        LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo 
+        LEFT JOIN usuarios ON fichajes.idUsuario = usuarios.idUsuario 
+        WHERE 1=1
+      `;
       const queryParams = [];
 
       if (idUsuario) {
-        query += ' AND idUsuario = ?';
+        query += ' AND fichajes.idUsuario = ?';
         queryParams.push(idUsuario);
       }
+
 
       if (fechaInicio) {
         const fechaInicioDate = new Date(fechaInicio);
@@ -241,21 +251,34 @@ exports.fichajesIdFichajeGET = function(req, idUsuario, fechaInicio) {
 
     const { idUsuario, fechaInicio } = req.query; // Extraer los parámetros de req.query
 
-    console.log('idUsuario:', idUsuario);
-    console.log('fechaInicio:', fechaInicio);
+    // console.log('idUsuario:', idUsuario);
+    // console.log('fechaInicio:', fechaInicio);
 
     try {
       const tokenVerification = await verifyToken(req);
 
-      let query = 'SELECT fichajes.*, trabajos.nombre AS trabajoNombre FROM fichajes LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo WHERE 1=1';
+      let query = `
+        SELECT 
+          fichajes.*, 
+          trabajos.nombre AS trabajoNombre, 
+          usuarios.Nombre AS usuarioNombre 
+        FROM fichajes 
+        LEFT JOIN trabajos ON fichajes.idTrabajo = trabajos.idTrabajo 
+        LEFT JOIN usuarios ON fichajes.idUsuario = usuarios.idUsuario 
+        WHERE 1=1
+      `;
       const queryParams = [];
 
       if (idUsuario) {
-        query += ' AND idUsuario = ?';
+        query += ' AND fichajes.idUsuario = ?';
         queryParams.push(idUsuario);
       }
 
+
+      // console.log('fechaInicio:', fechaInicio);
+
       if (fechaInicio) {
+        // console.log('estoy en fechaInicio:');
         const startOfDay = new Date(fechaInicio);
         startOfDay.setHours(0, 0, 0, 0);
       
@@ -266,7 +289,7 @@ exports.fichajesIdFichajeGET = function(req, idUsuario, fechaInicio) {
         queryParams.push(startOfDay.toISOString(), endOfDay.toISOString());
       }
       
-
+      // console.log('query:', query);
       db.query(query, queryParams, function(error, results) {
         if (error) {
           reject({
@@ -276,7 +299,7 @@ exports.fichajesIdFichajeGET = function(req, idUsuario, fechaInicio) {
         } else if (results.length > 0) {
           resolve({
             message: "Fichaje obtenido con éxito",
-            body: results[0],
+            body: results,
             tokenInfo: tokenVerification
           });
         } else {

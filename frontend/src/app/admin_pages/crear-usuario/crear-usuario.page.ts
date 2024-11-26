@@ -33,6 +33,7 @@ export class CrearUsuarioPage implements OnInit {
       async(response) => {
         // console.log(response);
         if(response.message === "Usuario creado con éxito"){
+          this.presentToastBien('Usuario creado con éxito');
           this.goBack();
         } else {
           this.presentToast('Error al crear el usuario');
@@ -58,6 +59,16 @@ export class CrearUsuarioPage implements OnInit {
       duration: 2000,
       color: 'danger',
       position: 'middle'
+    });
+    toast.present();
+  }
+
+  async presentToastBien(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: 'success'
     });
     toast.present();
   }

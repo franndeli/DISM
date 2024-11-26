@@ -27,8 +27,7 @@ export class EditarUsuarioPage implements OnInit {
     if (id) {
       this.idUsuario = +id;
     } else {
-      // Handle the case when id is null
-      this.presentToast('Error: ID de usuario no encontrado');
+      this.presentToastMal('Error: ID de usuario no encontrado');
       this.goBack();
     }
     this.loadUserData();
@@ -56,10 +55,10 @@ export class EditarUsuarioPage implements OnInit {
         async (response) => {
           // console.log(response);
           if (response.message === "Usuario modificado con éxito") {
-            this.presentToast('Usuario actualizado con éxito');
+            this.presentToastBien('Usuario actualizado con éxito');
             this.goBack();
           } else {
-            this.presentToast('Error al actualizar el usuario');
+            this.presentToastMal('Error al actualizar el usuario');
           }
         }
       );
@@ -70,12 +69,22 @@ export class EditarUsuarioPage implements OnInit {
     this.router.navigate(['/admin/gestion-usuarios']);
   }
 
-  async presentToast(message: string) {
+  async presentToastMal(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 2000,
-      position: 'bottom',
+      position: 'top',
       color: 'danger'
+    });
+    toast.present();
+  }
+
+  async presentToastBien(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+      color: 'success'
     });
     toast.present();
   }

@@ -13,7 +13,7 @@
 
   <div class="search-container">
     <!-- Menú desplegable para buscar usuarios -->
-    <ion-item (click)="toggleDesplegable()">
+    <ion-item (click)="toggleDesplegable()" class="dropdown-item">
       <ion-label>Seleccionar Usuario</ion-label>
       <ion-icon [name]="desplegableAbierto ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
     </ion-item>
@@ -23,17 +23,18 @@
       <ion-searchbar
         [(ngModel)]="filtroUsuario"
         (ionInput)="filtrarUsuarios()"
-        placeholder="Buscar usuario por nombre">
+        placeholder="Buscar usuario por nombre"
+        class="custom-searchbar">
       </ion-searchbar>
-      <ion-list>
-        <ion-item *ngFor="let usuario of usuariosFiltrados" (click)="actualizarFiltros('usuario', usuario)">
+      <ion-list class="custom-list">
+        <ion-item *ngFor="let usuario of usuariosFiltrados" (click)="actualizarFiltros('usuario', usuario)" class="custom-list-item">
           <ion-label>{{ usuario.Nombre }}</ion-label>
         </ion-item>
       </ion-list>
     </div>
 
     <!-- Mostrar usuario seleccionado -->
-    <ion-item *ngIf="usuarioSeleccionado">
+    <ion-item *ngIf="usuarioSeleccionado" class="selected-user-item">
       <ion-label>Usuario Seleccionado:</ion-label>
       <ion-text>{{ usuarioSeleccionado.Nombre }}</ion-text>
       <ion-button fill="clear" slot="end" (click)="actualizarFiltros('usuario', null)">
@@ -41,34 +42,13 @@
       </ion-button>
     </ion-item>
 
-  
-    <!-- Buscador de fecha -->
-    <!-- <div class="fecha-container">
-      <ion-item class="small-datetime">
-        <ion-label position="stacked">Fecha Inicio</ion-label>
-        <ion-datetime
-          display-format="DD/MM/YYYY" 
-          placeholder="Inicio"
-          [(ngModel)]="fechaInicio"
-          (ionChange)="onFechaChange()">
-        </ion-datetime>
-      </ion-item>
-    
-      <ion-item class="small-datetime">
-        <ion-label position="stacked">Fecha Fin</ion-label>
-        <ion-datetime
-          display-format="DD/MM/YYYY" 
-          placeholder="Fin"
-          [(ngModel)]="fechaFin"
-          (ionChange)="onFechaChange()">
-        </ion-datetime>
-      </ion-item>
-    </div> -->
-
-    <ion-list>
-      <ion-item id="open-modal2">
-        <ion-label>Modal - Date selection</ion-label>
+    <ion-list class="date-selection-list">
+      <ion-item id="open-modal2" class="date-selection-item">
+        <ion-label>Fecha de inicio</ion-label>
         <ion-note slot="end">{{fechaInicio | date}}</ion-note>
+        <ion-button *ngIf="fechaInicio" fill="clear" slot="end" (click)="actualizarFiltros('fechaInicio', null)">
+          <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+        </ion-button>
       </ion-item>
       <ion-modal trigger="open-modal2" [cssClass]="'bottom-end'">
         <ng-template>
@@ -78,7 +58,8 @@
             size="cover"
             [showDefaultButtons]="true"
             (ionChange)="actualizarFiltros(fechaInicio, $event.detail.value)"
-          ></ion-datetime>
+            class="custom-datetime">
+          </ion-datetime>
         </ng-template> 
       </ion-modal>
     </ion-list>
@@ -87,16 +68,19 @@
 
   <ng-content *ngIf="fichajes.length > 0; else noFichajes">
     <div *ngFor="let fichaje of fichajes">
-      <ion-card>
+      <ion-card class="custom-card-fichaje">
         <ion-card-header>
-          <ion-card-title>Detalles del Fichaje</ion-card-title>
+          <ion-card-title>{{ fichaje.trabajoNombre }}</ion-card-title>
         </ion-card-header>
+        <div style="display: flex; justify-content: center; text-align: center;">
+          <p style="color: black;"><strong>{{fichaje.usuarioNombre}}</strong></p>
+        </div>
         <ion-card-content>
-          <p><strong>Fecha de Entrada:</strong> {{ fichaje.FechaHoraEntrada }}</p>
+          <p><strong>Horas de entrada:</strong> {{ fichaje.FechaHoraEntrada }}</p>
           <p><strong>Horas Trabajadas:</strong> {{ fichaje.HorasTrabajadas }}</p>
-          <p><strong>Trabajo:</strong> {{ fichaje.trabajoNombre }}</p>
+          <p><strong>Horas de salida:</strong> {{ fichaje.FechaHoraSalida }}</p>
           <p><strong>Dirección:</strong> {{ fichaje.direccion }}</p>
-
+          
           <div class="button-container">
             <ion-button 
               fill="clear" 
@@ -116,7 +100,11 @@
   </ng-content>
 
   <ng-template #noFichajes>
-    <p>No hay fichajes</p>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>No hay trabajos registrados</ion-card-title>
+      </ion-card-header>
+    </ion-card>
   </ng-template>
 </ion-content>
 
@@ -131,5 +119,62 @@
     display: flex;
     justify-content: center;
     margin-top: 16px;
+  }
+
+  .search-container {
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    cursor: pointer;
+    border-bottom: 1px solid #ffffff;
+  }
+
+  .desplegable-container {
+    margin-top: 8px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-searchbar {
+    --background: #000000;
+    --border-radius: 8px;
+    -webkit-padding-start: 0;
+    --padding-inline-start: 0;
+    margin: 8px;
+  }
+
+  .custom-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .custom-list-item {
+    cursor: pointer;
+  }
+
+  .selected-user-item {
+    margin-top: 16px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .date-selection-list {
+    margin-top: 16px;
+  }
+
+  .date-selection-item {
+    cursor: pointer;
+    border-bottom: 1px solid #ffffff;
+  }
+
+  .custom-datetime {
+    --background: #000000;
+    --border-radius: 8px;
   }
 </style>

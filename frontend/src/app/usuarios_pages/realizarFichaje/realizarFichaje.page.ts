@@ -70,7 +70,7 @@ export class realizarFichaje implements OnInit {
           } else {
             this.trabajosService.getTrabajos(token).subscribe(
               (response) => {
-                console.log("Trabajos obtenidos", response);
+                // console.log("Trabajos obtenidos", response);
                 this.trabajos = response.body;
               }
             );
@@ -149,8 +149,8 @@ export class realizarFichaje implements OnInit {
         this.horasTrabajadas,
         usuario,
         fichaje.idTrabajo,
-        fichaje.GeolocalizacionLatitud,
-        fichaje.GeolocalizacionLongitud
+        fichaje.GeolocalizacionLongitud,
+        fichaje.GeolocalizacionLatitud
       ).subscribe(
         (response) => {
           // console.log("Fichaje finalizado", response);
