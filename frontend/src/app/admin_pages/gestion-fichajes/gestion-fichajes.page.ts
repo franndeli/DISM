@@ -66,7 +66,7 @@ export class GestionFichajesPage implements OnInit {
       this.usuarioService.getUsuarios(token, 'Usuario').subscribe((response) => {
         if (response.body != undefined) {
           this.usuarios = response.body;
-          this.usuariosFiltrados = [...this.usuarios]; // Inicializar la lista filtrada
+          this.usuariosFiltrados = [...this.usuarios]; 
         }
       });
     }
@@ -237,7 +237,6 @@ export class GestionFichajesPage implements OnInit {
     });
   }
   
-  // Método para procesar cada fichaje y formatear los campos
   async procesarFichaje(fichaje: any): Promise<any> {
     // console.log(fichaje);
     let processedFichaje = {

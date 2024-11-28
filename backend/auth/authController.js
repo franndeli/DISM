@@ -1,7 +1,6 @@
 // Para controlar los tokens de los usuarios
 
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('bcryptjs');
 
 const db = require('../utils/db');
 
@@ -21,8 +20,6 @@ async function getApiKey(req, res) {
 
         const apiKey = results[0].NombreKey;
 
-        // console.log(apiKey)
-
         resolve(apiKey);
       });
     } catch (error) {
@@ -37,9 +34,6 @@ const login = async (req, res) => {
   try {
     const apiKey = await getApiKey(req, res);
     
-    // console.log(apiKey);
-
-    // Verificar si el usuario existe en la base de datos
     const query = 'SELECT * FROM usuarios WHERE Usuario = ?';
 
     db.query(query, [usuario], (err, results) => {
@@ -53,21 +47,17 @@ const login = async (req, res) => {
 
       const user = results[0];
 
-      // Verificar la contraseña
       const passwordIsValid = clave == user.Clave;
 
       if (!passwordIsValid) {
         return res.status(401).json({ message: 'Contraseña incorrecta' });
       }
 
-      // console.log(apiKey);
-      // Crear el token JWT
       const token = jwt.sign({ id: user.idUsuario, role: user.Tipo }, apiKey, {
         expiresIn: 86400 // 24 horas
       });
 
       if (token) {
-        // Enviar el token y los datos del usuario en la respuesta
         res.status(200).json({
           id: user.idUsuario,
           usuario: user.Usuario,
@@ -97,7 +87,6 @@ const login = async (req, res) => {
       
       // console.log(token);
 
-      // Verifica el token sin prefijo
       jwt.verify(token, 'dd14a8f2da2a53787f208f39555efef9e237c3dedb58945cd59f2f2574e83007', (err, decoded) => {
         if (err) {
           console.error('Token inválido', err);

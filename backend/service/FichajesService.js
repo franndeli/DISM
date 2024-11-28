@@ -78,7 +78,6 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
         } else {
           const fichajesActualizados = [];
 
-          // Verificar cada fichaje para ver si cumple la condición de actualizar
           for (let fichaje of results) {
             if (fichaje.FechaHoraSalida === null) {
               const fechaHoraEntrada = new Date(fichaje.FechaHoraEntrada);
@@ -86,13 +85,11 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
               const diferenciaHoras = (fechaActual - fechaHoraEntrada) / (1000 * 60 * 60);
 
               if (diferenciaHoras >= 12) {
-                // Configura la FechaHoraSalida a 12 horas después de FechaHoraEntrada
                 const fechaHoraSalida = new Date(fechaHoraEntrada);
                 fechaHoraSalida.setHours(fechaHoraSalida.getHours() + 12);
 
                 const horasTrabajadas = 12;
 
-                // Llamada para actualizar el fichaje con el método PUT
                 await exports.fichajesIdFichajePUT(req, {
                   fechaHoraEntrada: fichaje.FechaHoraEntrada,
                   fechaHoraSalida: fechaHoraSalida.toISOString(),
@@ -103,7 +100,6 @@ exports.fichajesGET = function(req, idUsuario, fechaInicio, fechaFin) {
                   geolocalizacionLongitud: fichaje.GeolocalizacionLongitud
                 }, fichaje.idFichaje);
 
-                // Actualizar el objeto en resultados
                 fichaje.FechaHoraSalida = fechaHoraSalida.toISOString();
                 fichaje.HorasTrabajadas = horasTrabajadas;
                 fichajesActualizados.push(fichaje);
@@ -194,16 +190,15 @@ exports.fichajesPOST = function(req, body) {
             message:"Error al crear el fichaje", error: error
           });
         } else {
-          // console.log(results);
+ 
           const idFichaje = results.insertId;
-          // console.log(body);
+
           const fechaHoraEntrada = new Date(body.fechaHoraEntrada);
-          // console.log(fechaHoraEntrada);
+
           const papa = new Date();
           const fechaActual = papa.setHours(papa.getHours());
 
           const diferenciaHoras = (fechaActual - fechaHoraEntrada) / (1000 * 60 * 60);
-          // console.log(diferenciaHoras);
 
           if (diferenciaHoras > 12) {
             const fechaHoraSalida = new Date(fechaHoraEntrada);
@@ -249,10 +244,7 @@ exports.fichajesPOST = function(req, body) {
 exports.fichajesIdFichajeGET = function(req, idUsuario, fechaInicio) {
   return new Promise(async (resolve, reject) => {
 
-    const { idUsuario, fechaInicio } = req.query; // Extraer los parámetros de req.query
-
-    // console.log('idUsuario:', idUsuario);
-    // console.log('fechaInicio:', fechaInicio);
+    const { idUsuario, fechaInicio } = req.query;
 
     try {
       const tokenVerification = await verifyToken(req);

@@ -94,7 +94,6 @@ exports.usuariosDELETE = function(req, idUsuario) {
  * returns List
  **/
 
-// Cambia req por token en la firma de la función
 exports.usuariosGET = function(req) {
   return new Promise(async (resolve, reject) => {
     try {

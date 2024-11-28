@@ -61,3 +61,30 @@ Para ejecutar el proyecto completo, asegúrate de seguir estos pasos:
 2. Abre una terminal y navega a la carpeta `backend`, luego ejecuta `npm install` y `nodemon index.js`.
 3. Abre otra terminal, navega a la carpeta `frontend`, y ejecuta `npm install` seguido de `ionic serve`.
 4. Verifica los puertos que se muestran en la consola para acceder al backend y al frontend.
+
+### Funcionamiento de la aplicación
+
+Esta es una aplicación de gestión de fichajes diseñada para permitir el control de usuarios y administradores en un entorno laboral. Los usuarios pueden registrar sus horarios de entrada y salida, mientras que los administradores tienen funcionalidades adicionales, como la creación y gestión de usuarios.
+
+#### Roles en la aplicación
+
+1. **Administradores**:
+   - Los administradores tienen acceso a un panel donde pueden:
+     - Gestionar usuarios.
+     - Mirar los registros de fichajes.
+     - Gestionar los trabajos
+   - **Acceso como administrador**:
+     - Usuario: `celia_02`
+     - Contraseña: `1234`
+
+2. **Usuarios normales**:
+   - Los usuarios pueden:
+     - Registrar su entrada y salida.
+     - Consultar sus propios registros de fichajes.
+
+#### Flujo de trabajo básico
+
+1. Un administrador inicia sesión con las credenciales mencionadas para configurar la aplicación.
+2. Los usuarios pueden iniciar sesión con sus credenciales asignadas o solicitar al administrador la creación de un nuevo usuario.
+3. Los usuarios registran su horario de entrada y salida, y los datos quedan almacenados en la base de datos.
+4. Los administradores pueden supervisar y gestionar todos los registros desde su panel.

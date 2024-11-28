@@ -24,7 +24,6 @@ export class EditarTrabajoPage implements OnInit {
     if (id) {
       this.trabajoID = +id;
     } else {
-      // Handle the case when id is null
       this.presentToastMal('Error: ID de usuario no encontrado');
       this.goBack();
     }

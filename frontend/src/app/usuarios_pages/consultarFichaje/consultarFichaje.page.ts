@@ -43,7 +43,7 @@ export class consultarFichaje implements OnInit {
               direccion: ''
             }));
 
-            // Iterar sobre los fichajes y obtener la dirección
+           
             for (let fichaje of this.fichajes) {
               if (fichaje.GeolocalizacionLatitud && fichaje.GeolocalizacionLongitud) {
                 fichaje.direccion = await this.obtenerDireccion(
