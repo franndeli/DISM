@@ -1,26 +1,29 @@
-# Puesta en marcha del proyecto
+# Project Setup
 
-Este proyecto está dividido en dos partes principales: el **backend** y el **frontend**, cada uno ubicado en su respectiva carpeta. A continuación, se detallan los pasos necesarios para poner en marcha cada componente y cómo está estructurado el proyecto.
+This project is divided into two main parts: the **backend** and the **frontend**, each located in its respective folder. Below are the steps required to set up each component, along with the project structure and a description of its purpose.
 
-## Estructura del proyecto
+## Project Description
+This is a **time-tracking management application** designed to facilitate the control of users and administrators in a work environment. Users can log their check-in and check-out times, while administrators have additional functionalities, such as creating and managing users, overseeing time records, and managing tasks. The application ensures efficient tracking and management of work hours, making it ideal for organizations that require precise timekeeping.
 
-El proyecto está organizado de la siguiente manera:
+## Project Structure
+
+The project is organized as follows:
 
 ```
-/proyecto
+/project
 │
 ├── backend/
 │   ├── api/
-│   │   └── swagger/ (archivo de especificación Swagger)
+│   │   └── swagger/ (Swagger specification file)
 │   ├── auth
 │   ├── controllers/
 │   ├── service/
 │   ├── utils/
-│   └── index.js (archivo de inicio del servidor)
+│   └── index.js (server entry file)
 │
 └── frontend/
     ├── src/
-    │   ├── app/ (componentes de la aplicación)
+    │   ├── app/ (application components)
     │   │    └── service/
     │   ├── assets/
     │   └── environments/
@@ -29,62 +32,60 @@ El proyecto está organizado de la siguiente manera:
 
 ### Backend
 
-La carpeta `backend` contiene toda la lógica relacionada con la base de datos y la API. Dentro de la subcarpeta `api` se encuentra el archivo de especificación de Swagger, que documenta los endpoints de la API.
+The `backend` folder contains all the logic related to the database and API. Inside the `api` subfolder, you’ll find the Swagger specification file, which documents the API endpoints.
 
-**Pasos para la puesta en marcha del backend:**
-1. Navega a la carpeta `backend` en la terminal.
-2. Ejecuta `npm install` para instalar todas las dependencias necesarias.
-3. Asegúrate de tener encendido **XAMPP** con el servicio **MySQL** activo.
-4. Inicia el servidor con uno de los siguientes comandos:
+**Steps to set up the backend:**
+1. Navigate to the `backend` folder in your terminal.
+2. Run `npm install` to install all required dependencies.
+3. Ensure **XAMPP** is running with the **MySQL** service active.
+4. Start the server using one of the following commands:
    - `nodemon index.js`
    - `node index.js`
 
-**Nota:** La consola te indicará en qué puerto se está ejecutando el servidor.
+**Note:** The console will indicate the port on which the server is running.
 
 ### Frontend
 
-La carpeta `frontend` contiene el proyecto de **Ionic** con todos los componentes y servicios de la aplicación.
+The `frontend` folder contains the **Ionic** project with all the application components and services.
 
-**Pasos para la puesta en marcha del frontend:**
-1. Navega a la carpeta `frontend` en la terminal.
-2. Ejecuta `npm install` para instalar las dependencias.
-3. Inicia la aplicación con uno de los siguientes comandos:
+**Steps to set up the frontend:**
+1. Navigate to the `frontend` folder in your terminal.
+2. Run `npm install` to install the dependencies.
+3. Start the application using one of the following commands:
    - `ionic serve`
    - `ng serve`
 
-**Nota:** La consola mostrará en qué puerto se está ejecutando la aplicación frontend.
+**Note:** The console will display the port on which the frontend application is running.
 
-### Puesta en marcha completa
+### Full Project Setup
 
-Para ejecutar el proyecto completo, asegúrate de seguir estos pasos:
-1. Enciende **XAMPP** con **MySQL** activo.
-2. Abre una terminal y navega a la carpeta `backend`, luego ejecuta `npm install` y `nodemon index.js`.
-3. Abre otra terminal, navega a la carpeta `frontend`, y ejecuta `npm install` seguido de `ionic serve`.
-4. Verifica los puertos que se muestran en la consola para acceder al backend y al frontend.
+To run the complete project, follow these steps:
+1. Start **XAMPP** with **MySQL** active.
+2. Open a terminal, navigate to the `backend` folder, and run `npm install` followed by `nodemon index.js`.
+3. Open another terminal, navigate to the `frontend` folder, and run `npm install` followed by `ionic serve`.
+4. Check the ports displayed in the console to access the backend and frontend.
 
-### Funcionamiento de la aplicación
+## Application Workflow
 
-Esta es una aplicación de gestión de fichajes diseñada para permitir el control de usuarios y administradores en un entorno laboral. Los usuarios pueden registrar sus horarios de entrada y salida, mientras que los administradores tienen funcionalidades adicionales, como la creación y gestión de usuarios.
+### Roles in the Application
 
-#### Roles en la aplicación
+1. **Administrators**:
+   - Administrators have access to a dashboard where they can:
+     - Manage users.
+     - View time-tracking records.
+     - Manage tasks.
+   - **Admin login credentials**:
+     - Username: `celia_02`
+     - Password: `1234`
 
-1. **Administradores**:
-   - Los administradores tienen acceso a un panel donde pueden:
-     - Gestionar usuarios.
-     - Mirar los registros de fichajes.
-     - Gestionar los trabajos
-   - **Acceso como administrador**:
-     - Usuario: `celia_02`
-     - Contraseña: `1234`
+2. **Regular Users**:
+   - Users can:
+     - Log their check-in and check-out times.
+     - View their own time-tracking records.
 
-2. **Usuarios normales**:
-   - Los usuarios pueden:
-     - Registrar su entrada y salida.
-     - Consultar sus propios registros de fichajes.
+### Basic Workflow
 
-#### Flujo de trabajo básico
-
-1. Un administrador inicia sesión con las credenciales mencionadas para configurar la aplicación.
-2. Los usuarios pueden iniciar sesión con sus credenciales asignadas o solicitar al administrador la creación de un nuevo usuario.
-3. Los usuarios registran su horario de entrada y salida, y los datos quedan almacenados en la base de datos.
-4. Los administradores pueden supervisar y gestionar todos los registros desde su panel.
+1. An administrator logs in using the credentials above to configure the application.
+2. Users can log in with their assigned credentials or request the administrator to create a new account.
+3. Users log their check-in and check-out times, and the data is stored in the database.
+4. Administrators can monitor and manage all records from their dashboard.
